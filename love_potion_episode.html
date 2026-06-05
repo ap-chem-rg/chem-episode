@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chemistry of Love — An Episode Story</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0b14;
+    --panel: #16121f;
+    --accent: #c084fc;
+    --accent2: #f472b6;
+    --gold: #fbbf24;
+    --text: #f1e9ff;
+    --muted: #a78bbb;
+    --choice-bg: rgba(192,132,252,0.08);
+    --choice-hover: rgba(192,132,252,0.18);
+    --choice-border: rgba(192,132,252,0.3);
+    --success: #34d399;
+    --danger: #f87171;
+    --info: #60a5fa;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    font-family: 'Lato', sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 25% 60%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 40% 30%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 80%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 75% 20%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 85% 55%, rgba(255,255,255,0.35) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ---- TITLE SCREEN ---- */
+  #title-screen {
+    position: fixed; inset: 0;
+    background: linear-gradient(160deg, #0d0b14 0%, #1a0d2e 50%, #0d0b14 100%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    z-index: 100; transition: opacity 0.8s ease;
+  }
+  #title-screen.fade-out { opacity: 0; pointer-events: none; }
+  .title-glow { text-align: center; margin-bottom: 2rem; }
+  .title-glow h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 6vw, 4rem);
+    background: linear-gradient(135deg, #c084fc, #f472b6, #fbbf24);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    line-height: 1.2; margin-bottom: 0.5rem;
+    animation: shimmer 3s ease-in-out infinite alternate;
+  }
+  @keyframes shimmer { from { filter: brightness(1); } to { filter: brightness(1.3); } }
+  .title-glow .subtitle { font-size: 1rem; color: var(--muted); letter-spacing: 0.3em; text-transform: uppercase; }
+  .title-glow .course-tag {
+    display: inline-block; margin-top: 1rem; padding: 0.3rem 1rem;
+    border: 1px solid var(--choice-border); border-radius: 20px;
+    font-size: 0.75rem; color: var(--accent); letter-spacing: 0.15em;
+  }
+  .flask-svg { margin: 1.5rem 0; animation: float 3s ease-in-out infinite; }
+  @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  .start-btn {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: white; border: none; padding: 0.9rem 3rem; border-radius: 50px;
+    font-family: 'Lato', sans-serif; font-size: 1.1rem; font-weight: 700;
+    letter-spacing: 0.1em; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+    text-transform: uppercase;
+  }
+  .start-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(192,132,252,0.4); }
+
+  /* ---- GAME ---- */
+  #game {
+    position: relative; z-index: 1; width: 100%; max-width: 800px;
+    min-height: 100vh; flex-direction: column; padding: 1rem; display: none;
+  }
+  .progress-bar-wrap {
+    display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem;
+    margin-bottom: 1rem; background: var(--panel); border-radius: 12px;
+    border: 1px solid rgba(192,132,252,0.1);
+  }
+  .progress-label { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; white-space: nowrap; }
+  .progress-track { flex: 1; height: 6px; background: rgba(255,255,255,0.08); border-radius: 99px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 99px; transition: width 0.6s ease; }
+  .progress-pct { font-size: 0.75rem; color: var(--accent); font-weight: 700; }
+
+  /* ---- SCENE PANEL ---- */
+  .scene-panel {
+    background: var(--panel); border-radius: 16px;
+    border: 1px solid rgba(192,132,252,0.12); overflow: hidden; margin-bottom: 1rem;
+  }
+  .scene-stage {
+    width: 100%; height: 260px; position: relative; overflow: hidden;
+  }
+  .scene-stage svg { width: 100%; height: 100%; }
+
+  .scene-location-tag {
+    position: absolute; top: 12px; left: 12px;
+    background: rgba(13,11,20,0.8); border: 1px solid var(--choice-border);
+    padding: 0.3rem 0.75rem; border-radius: 20px; font-size: 0.7rem;
+    color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase;
+    z-index: 10; pointer-events: none;
+  }
+
+  /* character slide-in */
+  @keyframes char-enter-left { from { opacity:0; transform: translateX(-30px); } to { opacity:1; transform: translateX(0); } }
+  @keyframes char-enter-right { from { opacity:0; transform: translateX(30px); } to { opacity:1; transform: translateX(0); } }
+  @keyframes char-enter-center { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
+  .char-left  { animation: char-enter-left  0.5s ease forwards; }
+  .char-right { animation: char-enter-right 0.5s ease forwards; }
+  .char-center{ animation: char-enter-center 0.5s ease forwards; }
+
+  /* idle breathing */
+  @keyframes breathe { 0%,100%{transform:scaleY(1) translateY(0)} 50%{transform:scaleY(1.015) translateY(-1px)} }
+  .idle { transform-origin: bottom center; animation: breathe 3s ease-in-out infinite; }
+
+  /* item float */
+  @keyframes item-float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+  .item-float { animation: item-float 2s ease-in-out infinite; }
+
+  /* talking mouth blink */
+  @keyframes talk { 0%,100%{d:path("M-5,0 Q0,3 5,0")} 50%{d:path("M-5,0 Q0,6 5,0")} }
+
+  /* dialogue box */
+  .dialogue-box {
+    padding: 1.1rem 1.4rem; border-top: 1px solid rgba(192,132,252,0.1);
+    display: flex; gap: 0.85rem; align-items: flex-start;
+  }
+  .speaker-avatar-small {
+    width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+    border: 2px solid rgba(192,132,252,0.35); overflow: hidden; background: #1e1729;
+  }
+  .speaker-avatar-small svg { width: 100%; height: 100%; }
+  .dialogue-inner {}
+  .speaker-name {
+    font-family: 'Playfair Display', serif; font-size: 0.82rem;
+    color: var(--accent); font-weight: 700; letter-spacing: 0.05em; margin-bottom: 0.3rem;
+  }
+  .dialogue-text { font-size: 0.92rem; line-height: 1.65; color: var(--text); min-height: 2.8rem; }
+
+  /* chem fact */
+  .chem-fact {
+    background: linear-gradient(135deg, rgba(192,132,252,0.08), rgba(244,114,182,0.06));
+    border: 1px solid rgba(192,132,252,0.25); border-radius: 12px;
+    padding: 0.8rem 1rem; margin-bottom: 0.85rem;
+    display: flex; gap: 0.7rem; align-items: flex-start;
+    animation: slide-in 0.4s ease;
+  }
+  @keyframes slide-in { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+  .chem-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 0.1rem; }
+  .chem-label { font-size: 0.63rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); font-weight: 700; margin-bottom: 0.15rem; }
+  .chem-text { font-size: 0.8rem; line-height: 1.5; color: var(--muted); }
+  .chem-text strong { color: var(--text); }
+
+  /* outcome */
+  .outcome-flash {
+    padding: 0.55rem 0.9rem; border-radius: 8px; font-size: 0.8rem;
+    margin-bottom: 0.7rem; display: flex; align-items: center; gap: 0.45rem;
+    animation: slide-in 0.3s ease;
+  }
+  .outcome-flash.good  { background: rgba(52,211,153,0.12); border: 1px solid rgba(52,211,153,0.3); color: var(--success); }
+  .outcome-flash.bad   { background: rgba(248,113,113,0.12); border: 1px solid rgba(248,113,113,0.3); color: var(--danger); }
+  .outcome-flash.neutral { background: rgba(96,165,250,0.12); border: 1px solid rgba(96,165,250,0.3); color: var(--info); }
+
+  /* choices */
+  .choices-container { display: flex; flex-direction: column; gap: 0.55rem; margin-bottom: 1rem; }
+  .choice-btn {
+    background: var(--choice-bg); border: 1px solid var(--choice-border); border-radius: 12px;
+    padding: 0.8rem 1.1rem; color: var(--text); font-family: 'Lato', sans-serif;
+    font-size: 0.88rem; text-align: left; cursor: pointer;
+    transition: all 0.2s ease; display: flex; align-items: center; gap: 0.7rem; line-height: 1.4;
+  }
+  .choice-btn:hover { background: var(--choice-hover); border-color: var(--accent); transform: translateX(4px); }
+  .choice-icon { font-size: 1.05rem; flex-shrink: 0; }
+  .choice-label { font-size: 0.68rem; color: var(--muted); margin-top: 0.12rem; }
+
+  /* items */
+  .items-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.85rem; }
+  .item-badge {
+    background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.3);
+    border-radius: 20px; padding: 0.2rem 0.6rem; font-size: 0.7rem; color: var(--gold);
+    display: flex; align-items: center; gap: 0.3rem;
+    animation: pop-in 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes pop-in { from{opacity:0;transform:scale(0.7)} to{opacity:1;transform:scale(1)} }
+
+  /* end screen */
+  .end-screen {
+    background: var(--panel); border-radius: 16px; border: 1px solid rgba(192,132,252,0.2);
+    padding: 2rem; text-align: center; animation: slide-in 0.5s ease;
+  }
+  .end-screen h2 {
+    font-family: 'Playfair Display', serif; font-size: 1.8rem;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    margin-bottom: 0.5rem;
+  }
+  .end-screen p { color: var(--muted); font-size: 0.88rem; line-height: 1.7; margin-bottom: 1rem; }
+  .recipe-title { font-size: 0.67rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--accent); margin-bottom: 0.7rem; }
+  .potion-recipe {
+    background: rgba(192,132,252,0.07); border: 1px solid rgba(192,132,252,0.2);
+    border-radius: 12px; padding: 1rem; text-align: left; margin-bottom: 1.5rem;
+  }
+  .recipe-item { display: flex; gap: 0.5rem; font-size: 0.8rem; color: var(--text); padding: 0.28rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .recipe-item:last-child { border-bottom: none; }
+  .recipe-item .ri-dot { color: var(--accent); }
+  .restart-btn {
+    background: linear-gradient(135deg, var(--accent), var(--accent2)); color: white;
+    border: none; padding: 0.75rem 2.5rem; border-radius: 50px;
+    font-family: 'Lato', sans-serif; font-size: 0.95rem; font-weight: 700;
+    cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .restart-btn:hover { transform: scale(1.04); box-shadow: 0 0 20px rgba(192,132,252,0.35); }
+</style>
+</head>
+<body>
+
+<!-- TITLE SCREEN -->
+<div id="title-screen">
+  <div class="title-glow">
+    <h1>Chemistry of Love</h1>
+    <div class="subtitle">An Episode Story</div>
+    <div class="course-tag">AP Chemistry · Molecular Bonds &amp; Reactions</div>
+  </div>
+  <svg class="flask-svg" width="80" height="100" viewBox="0 0 90 110">
+    <defs>
+      <linearGradient id="pg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#c084fc" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#f472b6" stop-opacity="0.8"/>
+      </linearGradient>
+    </defs>
+    <path d="M32 5 L32 45 L8 85 Q4 95 12 102 L78 102 Q86 95 82 85 L58 45 L58 5 Z" fill="none" stroke="rgba(192,132,252,0.5)" stroke-width="2"/>
+    <path d="M32 5 L58 5" stroke="rgba(192,132,252,0.5)" stroke-width="2"/>
+    <path d="M36 45 L14 82 Q11 90 18 95 L72 95 Q79 90 76 82 L54 45 Z" fill="url(#pg)" opacity="0.8"/>
+    <circle cx="28" cy="75" r="4" fill="rgba(255,255,255,0.45)"/>
+    <circle cx="55" cy="82" r="3" fill="rgba(255,255,255,0.35)"/>
+    <circle cx="40" cy="88" r="2.5" fill="rgba(255,255,255,0.4)"/>
+  </svg>
+  <button class="start-btn" onclick="startGame()">Begin Story</button>
+  <p style="margin-top:1.5rem;font-size:0.72rem;color:rgba(167,139,187,0.5);letter-spacing:0.05em;">Tap choices to shape your path</p>
+</div>
+
+<!-- GAME -->
+<div id="game">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
+    <h2 style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--accent);">Chemistry of Love</h2>
+    <span id="chapter-label" style="font-size:0.7rem;color:var(--muted);letter-spacing:0.08em;"></span>
+  </div>
+  <div class="progress-bar-wrap">
+    <span class="progress-label">Progress</span>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <span class="progress-pct" id="progress-pct">0%</span>
+  </div>
+  <div id="items-bar" class="items-bar"></div>
+  <div class="scene-panel">
+    <div class="scene-stage" id="scene-stage"></div>
+    <div class="scene-location-tag" id="loc-tag"></div>
+    <div class="dialogue-box">
+      <div class="speaker-avatar-small" id="speaker-avatar-small"></div>
+      <div class="dialogue-inner">
+        <div class="speaker-name" id="speaker-name"></div>
+        <div class="dialogue-text" id="dialogue-text"></div>
+      </div>
+    </div>
+  </div>
+  <div id="chem-fact-area"></div>
+  <div id="outcome-area"></div>
+  <div id="choices-area"></div>
+</div>
+
+<script>
+// =====================================================================
+// CHARACTER SVG BUILDERS
+// Each returns an SVG <g> string positioned at (cx, groundY)
+// Characters are ~110px tall standing figures, Episode-visual-novel style
+// =====================================================================
+
+// Skin tones and outfit palettes per character
+const CHARS = {
+  player: { skin:'#F4C5A0', hair:'#3B2314', outfit:'#6d28d9', outline:'#4c1d95' },
+  vela:   { skin:'#C68642', hair:'#1a0a00', outfit:'#1e3a5f', outline:'#0c2340' },
+  park:   { skin:'#EFC89F', hair:'#5c2d0a', outfit:'#be185d', outline:'#9d174d' },
+  chen:   { skin:'#D4956A', hair:'#2d1a00', outfit:'#065f46', outline:'#064e3b' },
+  rivera: { skin:'#A0785A', hair:'#120800', outfit:'#1e3a8a', outline:'#1e3a8a' },
+};
+
+function buildChar(key, cx, groundY, facing='right', holdItem=null, classNames='') {
+  const c = CHARS[key];
+  const flip = facing === 'left' ? `scale(-1,1) translate(-${cx*2},0)` : '';
+  const gy = groundY; // feet Y
+  // body proportions (all relative to groundY)
+  const h = 115; // total height
+  const headR = 16;
+  const neckH = 6;
+  const torsoH = 38;
+  const legH = 40;
+  const footH = 8;
+  const armH = 32;
+
+  const headCY = gy - legH - footH - torsoH - neckH - headR;
+  const neckY  = gy - legH - footH - torsoH - neckH;
+  const torsoY = gy - legH - footH - torsoH;
+  const hipY   = gy - legH - footH;
+  const kneeY  = gy - footH - legH/2;
+  const footY  = gy - footH;
+
+  // shoulder Y for arms
+  const shoulderY = torsoY + 6;
+  const elbowY = shoulderY + armH * 0.5;
+  const handY = shoulderY + armH;
+
+  // outfit detail: collar line
+  const collarY = torsoY + 8;
+
+  let itemSvg = '';
+  if (holdItem === 'flask') {
+    itemSvg = `
+      <g class="item-float" transform="translate(${cx+18}, ${handY - 22})">
+        <rect x="-8" y="0" width="16" height="20" rx="2" fill="#a78bfa" stroke="#7c3aed" stroke-width="1.5"/>
+        <rect x="-6" y="20" width="12" height="8" rx="1" fill="#7c3aed" opacity="0.6"/>
+        <rect x="-3" y="-5" width="6" height="6" rx="1" fill="#8b5cf6"/>
+        <circle cx="0" cy="10" r="4" fill="rgba(255,255,255,0.3)"/>
+      </g>`;
+  } else if (holdItem === 'book') {
+    itemSvg = `
+      <g class="item-float" transform="translate(${cx+18}, ${handY - 14})">
+        <rect x="-12" y="-10" width="24" height="20" rx="2" fill="#065f46" stroke="#064e3b" stroke-width="1.5"/>
+        <line x1="-12" y1="0" x2="12" y2="0" stroke="rgba(255,255,255,0.2)" stroke-width="0.5"/>
+        <rect x="-4" y="-7" width="8" height="14" rx="1" fill="rgba(255,255,255,0.15)"/>
+      </g>`;
+  } else if (holdItem === 'vial') {
+    itemSvg = `
+      <g class="item-float" transform="translate(${cx+16}, ${handY - 18})">
+        <rect x="-4" y="0" width="8" height="18" rx="3" fill="#f472b6" stroke="#be185d" stroke-width="1.2"/>
+        <rect x="-2" y="-4" width="4" height="5" fill="#be185d" rx="1"/>
+        <circle cx="0" cy="9" r="2.5" fill="rgba(255,255,255,0.35)"/>
+      </g>`;
+  } else if (holdItem === 'stethoscope') {
+    itemSvg = `
+      <g transform="translate(${cx+14}, ${shoulderY+6})">
+        <path d="M0,0 Q10,12 6,22" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="6" cy="22" r="5" fill="none" stroke="#6b7280" stroke-width="1.5"/>
+        <circle cx="6" cy="22" r="2" fill="#9ca3af"/>
+      </g>`;
+  }
+
+  return `
+<g class="${classNames}" transform="${flip}">
+  <g class="idle" transform="translate(0,0)">
+    <!-- shadow -->
+    <ellipse cx="${cx}" cy="${gy+2}" rx="18" ry="4" fill="rgba(0,0,0,0.25)"/>
+    <!-- legs -->
+    <rect x="${cx-10}" y="${hipY}" width="9" height="${legH+footH}" rx="4" fill="${c.outfit}"/>
+    <rect x="${cx+1}" y="${hipY}" width="9" height="${legH+footH}" rx="4" fill="${c.outfit}"/>
+    <!-- feet -->
+    <ellipse cx="${cx-6}" cy="${gy}" rx="8" ry="${footH/2}" fill="${c.outline}"/>
+    <ellipse cx="${cx+6}" cy="${gy}" rx="8" ry="${footH/2}" fill="${c.outline}"/>
+    <!-- torso -->
+    <rect x="${cx-13}" y="${torsoY}" width="26" height="${torsoH+neckH}" rx="5" fill="${c.outfit}"/>
+    <!-- collar detail -->
+    <path d="M${cx-4},${collarY} L${cx},${collarY+8} L${cx+4},${collarY}" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.2"/>
+    <!-- left arm (back) -->
+    <line x1="${cx-13}" y1="${shoulderY}" x2="${cx-18}" y2="${handY}" stroke="${c.outfit}" stroke-width="9" stroke-linecap="round"/>
+    <!-- right arm (front) -->
+    <line x1="${cx+13}" y1="${shoulderY}" x2="${cx+17}" y2="${handY}" stroke="${c.outline}" stroke-width="9" stroke-linecap="round"/>
+    <!-- neck -->
+    <rect x="${cx-5}" y="${neckY}" width="10" height="${neckH+3}" fill="${c.skin}"/>
+    <!-- head -->
+    <ellipse cx="${cx}" cy="${headCY}" rx="${headR}" ry="${headR+1}" fill="${c.skin}" stroke="${c.outline}" stroke-width="1.2"/>
+    <!-- hair -->
+    <ellipse cx="${cx}" cy="${headCY - headR*0.55}" rx="${headR+1}" ry="${headR*0.65}" fill="${c.hair}"/>
+    <!-- eyes -->
+    <circle cx="${cx-5}" cy="${headCY+1}" r="2.2" fill="#fff"/>
+    <circle cx="${cx+5}" cy="${headCY+1}" r="2.2" fill="#fff"/>
+    <circle cx="${cx-4.5}" cy="${headCY+1.5}" r="1.4" fill="${c.outline}"/>
+    <circle cx="${cx+5.5}" cy="${headCY+1.5}" r="1.4" fill="${c.outline}"/>
+    <!-- eyebrows -->
+    <path d="M${cx-7},${headCY-4} Q${cx-4.5},${headCY-6} ${cx-2},${headCY-4}" fill="none" stroke="${c.hair}" stroke-width="1.2" stroke-linecap="round"/>
+    <path d="M${cx+2},${headCY-4} Q${cx+4.5},${headCY-6} ${cx+7},${headCY-4}" fill="none" stroke="${c.hair}" stroke-width="1.2" stroke-linecap="round"/>
+    <!-- mouth -->
+    <path d="M${cx-4},${headCY+8} Q${cx},${headCY+11} ${cx+4},${headCY+8}" fill="none" stroke="${c.outline}" stroke-width="1.3" stroke-linecap="round"/>
+  </g>
+  ${itemSvg}
+</g>`;
+}
+
+// Mini portrait for dialogue box (just head + shoulders)
+function buildPortrait(key, color) {
+  const c = CHARS[key];
+  return `<svg viewBox="0 0 42 42" xmlns="http://www.w3.org/2000/svg">
+    <rect width="42" height="42" fill="${color || '#1e1729'}"/>
+    <rect x="14" y="28" width="14" height="14" fill="${c.outfit}"/>
+    <rect x="17" y="24" width="8" height="7" fill="${c.skin}"/>
+    <ellipse cx="21" cy="18" rx="10" ry="11" fill="${c.skin}"/>
+    <ellipse cx="21" cy="10" rx="11" ry="7" fill="${c.hair}"/>
+    <circle cx="17" cy="19" r="1.8" fill="#fff"/>
+    <circle cx="25" cy="19" r="1.8" fill="#fff"/>
+    <circle cx="17.5" cy="19.5" r="1.1" fill="${c.outline}"/>
+    <circle cx="25.5" cy="19.5" r="1.1" fill="${c.outline}"/>
+    <path d="M17,25 Q21,28 25,25" fill="none" stroke="${c.outline}" stroke-width="1" stroke-linecap="round"/>
+  </svg>`;
+}
+
+// =====================================================================
+// BACKGROUND BUILDERS
+// =====================================================================
+function bgClassroom() {
+  return `
+  <!-- sky / wall -->
+  <rect width="800" height="260" fill="#1a1025"/>
+  <!-- floor -->
+  <rect x="0" y="200" width="800" height="60" fill="#100c1c"/>
+  <!-- floor line -->
+  <line x1="0" y1="200" x2="800" y2="200" stroke="rgba(192,132,252,0.15)" stroke-width="1"/>
+  <!-- chalkboard -->
+  <rect x="180" y="20" width="440" height="120" rx="4" fill="#0d3b27" stroke="rgba(52,211,153,0.3)" stroke-width="1.5"/>
+  <text x="400" y="60" text-anchor="middle" fill="rgba(255,255,255,0.55)" font-size="13" font-family="monospace">C₈H₁₁N  +  C₇H₈N₄O₂  →  💗</text>
+  <text x="400" y="82" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-size="11" font-family="monospace">Love Potion Synthesis</text>
+  <text x="400" y="110" text-anchor="middle" fill="rgba(52,211,153,0.5)" font-size="10" font-family="monospace">pH 7.4  ·  37°C  ·  ΔH = -82 kJ/mol</text>
+  <!-- desks -->
+  <rect x="50" y="180" width="120" height="12" rx="2" fill="#2a1f40" stroke="rgba(192,132,252,0.15)" stroke-width="1"/>
+  <rect x="220" y="180" width="120" height="12" rx="2" fill="#2a1f40" stroke="rgba(192,132,252,0.15)" stroke-width="1"/>
+  <rect x="600" y="180" width="120" height="12" rx="2" fill="#2a1f40" stroke="rgba(192,132,252,0.15)" stroke-width="1"/>
+  <!-- windows -->
+  <rect x="20" y="30" width="60" height="80" rx="3" fill="rgba(96,165,250,0.08)" stroke="rgba(96,165,250,0.2)" stroke-width="1"/>
+  <line x1="50" y1="30" x2="50" y2="110" stroke="rgba(96,165,250,0.15)" stroke-width="0.8"/>
+  <rect x="720" y="30" width="60" height="80" rx="3" fill="rgba(96,165,250,0.08)" stroke="rgba(96,165,250,0.2)" stroke-width="1"/>
+  <line x1="750" y1="30" x2="750" y2="110" stroke="rgba(96,165,250,0.15)" stroke-width="0.8"/>`;
+}
+
+function bgCloset() {
+  return `
+  <rect width="800" height="260" fill="#120d1e"/>
+  <rect x="0" y="200" width="800" height="60" fill="#0a0712"/>
+  <line x1="0" y1="200" x2="800" y2="200" stroke="rgba(192,132,252,0.1)" stroke-width="1"/>
+  <!-- shelves -->
+  <rect x="100" y="60" width="600" height="8" rx="2" fill="#2a1f40"/>
+  <rect x="100" y="130" width="600" height="8" rx="2" fill="#2a1f40"/>
+  <!-- shelf items -->
+  <rect x="120" y="30" width="14" height="30" rx="3" fill="#7c3aed" opacity="0.7"/>
+  <rect x="145" y="40" width="10" height="20" rx="2" fill="#be185d" opacity="0.6"/>
+  <rect x="165" y="35" width="16" height="25" rx="3" fill="#065f46" opacity="0.7"/>
+  <rect x="500" y="32" width="12" height="28" rx="2" fill="#1d4ed8" opacity="0.6"/>
+  <rect x="524" y="38" width="14" height="22" rx="2" fill="#92400e" opacity="0.6"/>
+  <!-- safety goggles -->
+  <ellipse cx="350" cy="47" rx="15" ry="8" fill="none" stroke="rgba(251,191,36,0.5)" stroke-width="2"/>
+  <ellipse cx="390" cy="47" rx="15" ry="8" fill="none" stroke="rgba(251,191,36,0.5)" stroke-width="2"/>
+  <line x1="365" y1="47" x2="375" y2="47" stroke="rgba(251,191,36,0.5)" stroke-width="2"/>
+  <!-- spotlight from above -->
+  <path d="M380,0 L320,200 L440,200 Z" fill="rgba(251,191,36,0.04)"/>
+  <circle cx="380" cy="5" r="8" fill="rgba(251,191,36,0.3)"/>
+  <!-- door frame -->
+  <rect x="0" y="0" width="6" height="260" fill="#1e1729"/>
+  <rect x="794" y="0" width="6" height="260" fill="#1e1729"/>`;
+}
+
+function bgHallway() {
+  return `
+  <rect width="800" height="260" fill="#0e0b1a"/>
+  <rect x="0" y="210" width="800" height="50" fill="#080612"/>
+  <rect x="0" y="0" width="800" height="18" fill="#080612"/>
+  <line x1="0" y1="210" x2="800" y2="210" stroke="rgba(192,132,252,0.12)" stroke-width="1"/>
+  <!-- perspective lines -->
+  <line x1="0" y1="18" x2="400" y2="80" stroke="rgba(192,132,252,0.08)" stroke-width="1"/>
+  <line x1="800" y1="18" x2="400" y2="80" stroke="rgba(192,132,252,0.08)" stroke-width="1"/>
+  <line x1="0" y1="210" x2="400" y2="140" stroke="rgba(192,132,252,0.08)" stroke-width="1"/>
+  <line x1="800" y1="210" x2="400" y2="140" stroke="rgba(192,132,252,0.08)" stroke-width="1"/>
+  <!-- lockers left -->
+  <rect x="0" y="18" width="50" height="192" fill="#16112a" stroke="rgba(192,132,252,0.1)" stroke-width="0.5"/>
+  <rect x="55" y="18" width="50" height="192" fill="#16112a" stroke="rgba(192,132,252,0.1)" stroke-width="0.5"/>
+  <!-- lockers right -->
+  <rect x="695" y="18" width="50" height="192" fill="#16112a" stroke="rgba(192,132,252,0.1)" stroke-width="0.5"/>
+  <rect x="750" y="18" width="50" height="192" fill="#16112a" stroke="rgba(192,132,252,0.1)" stroke-width="0.5"/>
+  <!-- ceiling lights -->
+  <rect x="160" y="0" width="80" height="6" rx="2" fill="rgba(251,191,36,0.25)"/>
+  <rect x="560" y="0" width="80" height="6" rx="2" fill="rgba(251,191,36,0.25)"/>
+  <ellipse cx="200" cy="3" rx="60" ry="20" fill="rgba(251,191,36,0.04)"/>
+  <ellipse cx="600" cy="3" rx="60" ry="20" fill="rgba(251,191,36,0.04)"/>`;
+}
+
+function bgGreenhouse() {
+  return `
+  <rect width="800" height="260" fill="#071a0e"/>
+  <rect x="0" y="210" width="800" height="50" fill="#040f07"/>
+  <line x1="0" y1="210" x2="800" y2="210" stroke="rgba(52,211,153,0.15)" stroke-width="1"/>
+  <!-- glass panes -->
+  <rect x="0" y="0" width="800" height="260" fill="rgba(52,211,153,0.02)"/>
+  <line x1="133" y1="0" x2="133" y2="260" stroke="rgba(52,211,153,0.08)" stroke-width="1"/>
+  <line x1="266" y1="0" x2="266" y2="260" stroke="rgba(52,211,153,0.08)" stroke-width="1"/>
+  <line x1="400" y1="0" x2="400" y2="260" stroke="rgba(52,211,153,0.08)" stroke-width="1"/>
+  <line x1="533" y1="0" x2="533" y2="260" stroke="rgba(52,211,153,0.08)" stroke-width="1"/>
+  <line x1="666" y1="0" x2="666" y2="260" stroke="rgba(52,211,153,0.08)" stroke-width="1"/>
+  <line x1="0" y1="80" x2="800" y2="80" stroke="rgba(52,211,153,0.06)" stroke-width="0.8"/>
+  <!-- potted plants decorative -->
+  <rect x="30" y="185" width="30" height="25" rx="3" fill="#1a3a20"/>
+  <ellipse cx="45" cy="180" rx="20" ry="15" fill="#15803d" opacity="0.8"/>
+  <ellipse cx="35" cy="175" rx="12" ry="10" fill="#16a34a" opacity="0.7"/>
+  <rect x="700" y="185" width="30" height="25" rx="3" fill="#1a3a20"/>
+  <ellipse cx="715" cy="180" rx="20" ry="15" fill="#15803d" opacity="0.8"/>
+  <!-- rose bush -->
+  <rect x="360" y="195" width="80" height="15" rx="2" fill="#1a3a20"/>
+  <ellipse cx="400" cy="190" rx="35" ry="18" fill="#166534" opacity="0.9"/>
+  <circle cx="385" cy="185" r="7" fill="#be185d" opacity="0.9"/>
+  <circle cx="407" cy="182" r="6" fill="#e11d48" opacity="0.8"/>
+  <circle cx="398" cy="192" r="5" fill="#be185d" opacity="0.7"/>
+  <!-- sun rays -->
+  <path d="M400,0 L350,100 L450,100Z" fill="rgba(251,191,36,0.03)"/>`;
+}
+
+function bgLibrary() {
+  return `
+  <rect width="800" height="260" fill="#100c07"/>
+  <rect x="0" y="210" width="800" height="50" fill="#080602"/>
+  <line x1="0" y1="210" x2="800" y2="210" stroke="rgba(251,191,36,0.1)" stroke-width="1"/>
+  <!-- bookshelf left -->
+  <rect x="0" y="0" width="160" height="260" fill="#160e04" stroke="rgba(251,191,36,0.1)" stroke-width="1"/>
+  <rect x="0" y="60" width="160" height="6" fill="#2a1a08"/>
+  <rect x="0" y="130" width="160" height="6" fill="#2a1a08"/>
+  <rect x="0" y="200" width="160" height="6" fill="#2a1a08"/>
+  <!-- book spines left -->
+  <rect x="10" y="15" width="18" height="44" rx="1" fill="#7c3aed"/>
+  <rect x="30" y="20" width="14" height="39" rx="1" fill="#be185d"/>
+  <rect x="46" y="12" width="20" height="47" rx="1" fill="#065f46"/>
+  <rect x="68" y="18" width="15" height="41" rx="1" fill="#1d4ed8"/>
+  <rect x="85" y="22" width="18" height="37" rx="1" fill="#92400e"/>
+  <rect x="105" y="15" width="16" height="44" rx="1" fill="#064e3b"/>
+  <rect x="123" y="20" width="14" height="39" rx="1" fill="#9d174d"/>
+  <rect x="10" y="75" width="22" height="48" rx="1" fill="#1e3a5f"/>
+  <rect x="34" y="78" width="16" height="45" rx="1" fill="#7c3aed"/>
+  <rect x="52" y="72" width="20" height="51" rx="1" fill="#065f46"/>
+  <!-- bookshelf right -->
+  <rect x="640" y="0" width="160" height="260" fill="#160e04" stroke="rgba(251,191,36,0.1)" stroke-width="1"/>
+  <rect x="640" y="60" width="160" height="6" fill="#2a1a08"/>
+  <rect x="640" y="130" width="160" height="6" fill="#2a1a08"/>
+  <rect x="650" y="15" width="18" height="44" rx="1" fill="#be185d"/>
+  <rect x="670" y="20" width="14" height="39" rx="1" fill="#065f46"/>
+  <rect x="686" y="15" width="20" height="44" rx="1" fill="#7c3aed"/>
+  <rect x="708" y="22" width="16" height="37" rx="1" fill="#1d4ed8"/>
+  <!-- table -->
+  <rect x="240" y="185" width="320" height="15" rx="3" fill="#2a1a08" stroke="rgba(251,191,36,0.15)" stroke-width="1"/>
+  <rect x="270" y="200" width="14" height="30" fill="#2a1a08"/>
+  <rect x="516" y="200" width="14" height="30" fill="#2a1a08"/>
+  <!-- lamp -->
+  <rect x="380" y="140" width="4" height="45" fill="#4b3a1a"/>
+  <path d="M360,140 L420,140 L400,120 L380,120 Z" fill="#92400e" opacity="0.8"/>
+  <ellipse cx="390" cy="140" rx="30" ry="10" fill="rgba(251,191,36,0.08)"/>`;
+}
+
+function bgLab() {
+  return `
+  <rect width="800" height="260" fill="#0d0d1a"/>
+  <rect x="0" y="195" width="800" height="65" fill="#08080f"/>
+  <line x1="0" y1="195" x2="800" y2="195" stroke="rgba(192,132,252,0.15)" stroke-width="1"/>
+  <!-- lab bench left -->
+  <rect x="0" y="175" width="280" height="20" rx="2" fill="#1a1030" stroke="rgba(192,132,252,0.2)" stroke-width="1"/>
+  <!-- lab bench right -->
+  <rect x="520" y="175" width="280" height="20" rx="2" fill="#1a1030" stroke="rgba(192,132,252,0.2)" stroke-width="1"/>
+  <!-- equipment left bench -->
+  <rect x="30" y="145" width="12" height="30" rx="3" fill="#7c3aed" opacity="0.8"/>
+  <path d="M25,145 L43,145 L38,120 L30,120 Z" fill="#a78bfa" opacity="0.7"/>
+  <rect x="70" y="148" width="10" height="27" rx="2" fill="#be185d" opacity="0.7"/>
+  <circle cx="130" cy="163" r="14" fill="none" stroke="rgba(192,132,252,0.4)" stroke-width="2"/>
+  <circle cx="130" cy="163" r="8" fill="rgba(192,132,252,0.15)"/>
+  <rect x="165" y="150" width="30" height="25" rx="2" fill="#1e3a5f" stroke="#3b82f6" stroke-width="1"/>
+  <!-- equipment right bench -->
+  <rect x="550" y="145" width="12" height="30" rx="3" fill="#f472b6" opacity="0.7"/>
+  <path d="M545,145 L563,145 L558,125 L550,125 Z" fill="#fbbf24" opacity="0.6"/>
+  <circle cx="620" cy="163" r="14" fill="none" stroke="rgba(244,114,182,0.4)" stroke-width="2"/>
+  <rect x="670" y="150" width="30" height="25" rx="2" fill="#1e3a5f" stroke="#3b82f6" stroke-width="1"/>
+  <!-- overhead light strips -->
+  <rect x="150" y="0" width="200" height="5" rx="2" fill="rgba(192,132,252,0.3)"/>
+  <rect x="450" y="0" width="200" height="5" rx="2" fill="rgba(192,132,252,0.3)"/>
+  <!-- glow from bench -->
+  <ellipse cx="140" cy="185" rx="80" ry="15" fill="rgba(192,132,252,0.05)"/>
+  <ellipse cx="660" cy="185" rx="80" ry="15" fill="rgba(244,114,182,0.05)"/>`;
+}
+
+function bgNurse() {
+  return `
+  <rect width="800" height="260" fill="#0d1520"/>
+  <rect x="0" y="205" width="800" height="55" fill="#060f18"/>
+  <line x1="0" y1="205" x2="800" y2="205" stroke="rgba(96,165,250,0.12)" stroke-width="1"/>
+  <!-- desk -->
+  <rect x="500" y="180" width="280" height="18" rx="2" fill="#0f2235" stroke="rgba(96,165,250,0.2)" stroke-width="1"/>
+  <rect x="520" y="198" width="12" height="30" fill="#0f2235"/>
+  <rect x="750" y="198" width="12" height="30" fill="#0f2235"/>
+  <!-- desk items -->
+  <rect x="520" y="148" width="20" height="32" rx="2" fill="#1e3a8a" opacity="0.8"/>
+  <rect x="555" y="155" width="14" height="25" rx="2" fill="#065f46" opacity="0.7"/>
+  <!-- red cross sign -->
+  <rect x="360" y="20" width="80" height="80" rx="4" fill="#0f2235" stroke="rgba(96,165,250,0.2)" stroke-width="1"/>
+  <rect x="386" y="30" width="28" height="60" rx="2" fill="#be123c" opacity="0.8"/>
+  <rect x="370" y="46" width="60" height="28" rx="2" fill="#be123c" opacity="0.8"/>
+  <!-- examination bed -->
+  <rect x="50" y="175" width="200" height="20" rx="4" fill="#0f2235" stroke="rgba(96,165,250,0.2)" stroke-width="1"/>
+  <rect x="50" y="185" width="200" height="10" rx="2" fill="rgba(255,255,255,0.06)"/>
+  <!-- windows -->
+  <rect x="20" y="30" width="70" height="100" rx="3" fill="rgba(96,165,250,0.06)" stroke="rgba(96,165,250,0.15)" stroke-width="1"/>
+  <line x1="55" y1="30" x2="55" y2="130" stroke="rgba(96,165,250,0.12)" stroke-width="0.8"/>
+  <line x1="20" y1="80" x2="90" y2="80" stroke="rgba(96,165,250,0.12)" stroke-width="0.8"/>`;
+}
+
+const BKGS = { classroom:bgClassroom, closet:bgCloset, hallway:bgHallway, greenhouse:bgGreenhouse, library:bgLibrary, lab:bgLab, nurse:bgNurse };
+
+// =====================================================================
+// SCENE CHARACTER CONFIGS
+// Which characters appear, where, and what they hold
+// =====================================================================
+const SCENE_CHARS = {
+  0: [ // classroom — vela lectures, player stands at desk
+    { key:'vela',  cx:150, ground:200, facing:'right', hold:null,      cls:'char-left' },
+    { key:'player',cx:600, ground:200, facing:'left',  hold:null,      cls:'char-right' },
+  ],
+  1: [ // closet — player finds item
+    { key:'player',cx:380, ground:200, facing:'right', hold:'flask',   cls:'char-center' },
+  ],
+  2: [ // skip closet hallway — just player walking
+    { key:'player',cx:400, ground:210, facing:'right', hold:null,      cls:'char-center' },
+  ],
+  3: [ // hallway — player + ms park talking
+    { key:'park',  cx:230, ground:210, facing:'right', hold:'vial',    cls:'char-left' },
+    { key:'player',cx:570, ground:210, facing:'left',  hold:null,      cls:'char-right' },
+  ],
+  4: [ // greenhouse entrance — player frustrated
+    { key:'player',cx:400, ground:210, facing:'right', hold:null,      cls:'char-center' },
+  ],
+  5: [ // greenhouse success — player holds two items
+    { key:'player',cx:400, ground:210, facing:'right', hold:'vial',    cls:'char-center' },
+  ],
+  6: [ // library — librarian chen + player
+    { key:'chen',  cx:220, ground:205, facing:'right', hold:'book',    cls:'char-left' },
+    { key:'player',cx:570, ground:205, facing:'left',  hold:null,      cls:'char-right' },
+  ],
+  7: [ // greenhouse partial
+    { key:'player',cx:400, ground:210, facing:'right', hold:'vial',    cls:'char-center' },
+  ],
+  8: [ // lab mixing — player working
+    { key:'player',cx:400, ground:195, facing:'right', hold:'flask',   cls:'char-center' },
+  ],
+  9: [ // nurse's office — nurse rivera + player
+    { key:'rivera',cx:580, ground:205, facing:'left',  hold:'stethoscope', cls:'char-right' },
+    { key:'player',cx:230, ground:205, facing:'right', hold:null,      cls:'char-left' },
+  ],
+  10: [ // incomplete end — dr vela + sad player
+    { key:'vela',  cx:200, ground:195, facing:'right', hold:null,      cls:'char-left' },
+    { key:'player',cx:580, ground:195, facing:'left',  hold:null,      cls:'char-right' },
+  ],
+  11: [ // complete end — everyone celebrating
+    { key:'vela',  cx:140, ground:195, facing:'right', hold:null,      cls:'char-left' },
+    { key:'player',cx:400, ground:195, facing:'right', hold:'flask',   cls:'char-center' },
+    { key:'park',  cx:660, ground:195, facing:'left',  hold:'vial',    cls:'char-right' },
+  ],
+};
+
+// Speaker -> character key mapping
+const SPEAKER_CHAR = {
+  'Dr. Vela':'vela', 'Narrator':'player', 'Ms. Park':'park',
+  'Librarian Chen':'chen', 'Nurse Rivera':'rivera', 'You':'player'
+};
+
+// =====================================================================
+// SCENE DATA
+// =====================================================================
+const SCENES = [
+  {
+    id:0, chapter:"Chapter 1: The Assignment", location:"Chemistry Classroom", bg:"classroom",
+    speaker:"Dr. Vela",
+    dialogue:"Welcome, students. Today's challenge is unlike any other. Somewhere in this school are five ingredients for a real Love Potion — compounds that stimulate oxytocin, phenylethylamine, and serotonin. Your choices determine if you find them all.",
+    chemFact:{ icon:"🧪", label:"Chem Concept", text:"A <strong>Love Potion</strong> is rooted in real chemistry. The brain releases <strong>phenylethylamine (PEA)</strong>, <strong>dopamine</strong>, <strong>oxytocin</strong>, and <strong>serotonin</strong> during attraction — organic molecules with precise structures." },
+    choices:[
+      { icon:"🚪", text:"Head to the science supply closet", label:"Maybe there's something useful inside", next:1 },
+      { icon:"🤷", text:"Skip the closet — go straight to the lab", label:"Shortcuts might cost you an ingredient", next:2 }
+    ]
+  },
+  {
+    id:1, chapter:"Chapter 1: The Assignment", location:"Supply Closet", bg:"closet",
+    speaker:"Narrator",
+    dialogue:"You open the door. Inside, half-hidden behind safety goggles, is a vial of dark chocolate extract. A sticky note reads: 'Theobromine — triggers mild euphoria. Handle with care.' You pocket the vial.",
+    outcome:{ type:"good", text:"✓ You collected Theobromine extract!" }, item:"🍫 Theobromine Extract",
+    chemFact:{ icon:"🍫", label:"Ingredient #1 Found", text:"<strong>Theobromine</strong> (C₇H₈N₄O₂) is a xanthine alkaloid in cacao. It inhibits adenosine receptors, causing mild stimulation and mood elevation — a methylxanthine structurally similar to caffeine." },
+    choices:[
+      { icon:"👤", text:"Stop and talk to Ms. Park in the hallway", label:"She seems to know something...", next:3 },
+      { icon:"➡️", text:"Head directly to the greenhouse", label:"No time to stop", next:4 }
+    ]
+  },
+  {
+    id:2, chapter:"Chapter 1: The Assignment", location:"Main Hallway", bg:"hallway",
+    speaker:"Narrator",
+    dialogue:"You walk past the closet without a second glance. You feel efficient — until you remember Dr. Vela mentioned 'hidden ingredients in unexpected places.' You've already missed one.",
+    outcome:{ type:"bad", text:"✗ You missed the Theobromine extract!" },
+    chemFact:{ icon:"⚠️", label:"Missed Ingredient", text:"<strong>Theobromine</strong> was in that closet! It's a key stimulant alkaloid from dark chocolate that triggers mild dopamine release. Without it, your potion will have a weaker euphoria-inducing effect." },
+    choices:[
+      { icon:"👤", text:"Stop and talk to Ms. Park in the hallway", label:"She might help you recover", next:3 },
+      { icon:"➡️", text:"Head directly to the greenhouse", label:"Move on — cut your losses", next:4 }
+    ]
+  },
+  {
+    id:3, chapter:"Chapter 2: The Gardener's Secret", location:"Main Hallway", bg:"hallway",
+    speaker:"Ms. Park",
+    dialogue:"Oh, you're working on the Vela challenge? I was his lab partner years ago. I hid something in the greenhouse — rose root extract. It boosts serotonin naturally. The lock combination is 6-02-23.",
+    outcome:{ type:"good", text:"✓ You got the greenhouse combination!" }, item:"🔑 Greenhouse Code: 6-02-23",
+    chemFact:{ icon:"🌹", label:"Chemistry Hint", text:"The code 6-02-23 references <strong>Avogadro's Number</strong> (6.02 × 10²³) — the number of particles in one mole. <strong>Serotonin</strong> (C₁₀H₁₂N₂O) is a monoamine neurotransmitter modulated by rose extract compounds." },
+    choices:[
+      { icon:"🌿", text:"Go to the greenhouse now", label:"You have the code — move fast", next:5 },
+      { icon:"📚", text:"Stop at the library first", label:"Check the synthesis notes", next:6 }
+    ]
+  },
+  {
+    id:4, chapter:"Chapter 2: The Gardener's Secret", location:"Greenhouse Entrance", bg:"greenhouse",
+    speaker:"Narrator",
+    dialogue:"You reach the greenhouse — but the door has a combination lock. You have no idea what the numbers are. You try random combinations for 10 minutes before a maintenance worker opens it for you. Time wasted.",
+    outcome:{ type:"bad", text:"✗ No code — you lost 10 minutes!" },
+    chemFact:{ icon:"💡", label:"Missed Hint", text:"Ms. Park knew the code was <strong>6-02-23</strong> — Avogadro's Number (6.02 × 10²³). Moles, concentration, and particle counts are the backbone of all stoichiometry calculations." },
+    choices:[
+      { icon:"🌿", text:"Enter the greenhouse and search", label:"Better late than never", next:7 },
+      { icon:"📚", text:"Visit the library for synthesis notes", label:"Knowledge is an ingredient too", next:6 }
+    ]
+  },
+  {
+    id:5, chapter:"Chapter 2: The Gardener's Secret", location:"School Greenhouse", bg:"greenhouse",
+    speaker:"Narrator",
+    dialogue:"You punch in 6-02-23. Click. The door swings open. You find the rose root extract immediately — labeled 'Rhodiola rosea — serotonergic adaptogen.' You also spot lavender oil nearby and grab it.",
+    outcome:{ type:"good", text:"✓ Rose Root Extract + Lavender Oil collected!" }, item:"🌹 Rose Root Extract", item2:"💜 Lavender Oil",
+    chemFact:{ icon:"🌿", label:"Ingredients #2 & #3 Found", text:"<strong>Rhodiola rosea</strong> contains salidroside and rosavins, which modulate serotonin. <strong>Linalool</strong> in lavender binds GABA receptors, reducing anxiety. Both involve <strong>receptor-ligand chemistry</strong> — molecules binding protein active sites by molecular geometry." },
+    choices:[
+      { icon:"🔬", text:"Go to the lab to begin mixing", label:"You have enough to start", next:8 },
+      { icon:"🏃", text:"Find the nurse's office first", label:"Rumor: an ingredient is hidden there", next:9 }
+    ]
+  },
+  {
+    id:6, chapter:"Chapter 2: The Gardener's Secret", location:"School Library", bg:"library",
+    speaker:"Librarian Chen",
+    dialogue:"You came for the synthesis notes? Smart. Dr. Vela left a sealed envelope here with exact molecular weights and pH levels. Also — here, take this vial of vanilla extract. Vanillin boosts mood through dopaminergic pathways.",
+    outcome:{ type:"good", text:"✓ Synthesis Notes + Vanillin extract collected!" }, item:"📋 Synthesis Notes", item2:"🌼 Vanillin Extract",
+    chemFact:{ icon:"📗", label:"Ingredient #4 Found + Notes", text:"<strong>Vanillin</strong> (C₈H₈O₃) is a phenolic aldehyde that triggers mild dopaminergic responses. The notes specify mixing at <strong>pH 7.4</strong> (blood pH) in aqueous solution — a key concept in <strong>buffer chemistry</strong>." },
+    choices:[
+      { icon:"🌿", text:"Now go to the greenhouse", label:"Library stop was worth it", next:7 },
+      { icon:"🔬", text:"Head straight to the lab", label:"Start synthesis with what you have", next:8 }
+    ]
+  },
+  {
+    id:7, chapter:"Chapter 2: The Gardener's Secret", location:"School Greenhouse", bg:"greenhouse",
+    speaker:"Narrator",
+    dialogue:"Inside the greenhouse, the rose root extract is buried under dense foliage. After searching, you find it — but the lavender oil is gone, taken by another student who got here first.",
+    outcome:{ type:"neutral", text:"~ Rose Root Extract found — Lavender Oil taken by someone else." }, item:"🌹 Rose Root Extract",
+    chemFact:{ icon:"🌿", label:"Ingredient #2 Found (Partial)", text:"<strong>Rhodiola rosea</strong> supports serotonin regulation. Without lavender's <strong>linalool</strong>, your potion's <strong>entourage effect</strong> — where compounds amplify each other's action — is reduced significantly." },
+    choices:[
+      { icon:"🔬", text:"Go to the lab — start synthesis", label:"Work with what you have", next:8 },
+      { icon:"🏃", text:"Check the nurse's office", label:"One more ingredient might be there", next:9 }
+    ]
+  },
+  {
+    id:8, chapter:"Chapter 3: The Synthesis", location:"Chemistry Lab", bg:"lab",
+    speaker:"Narrator",
+    dialogue:"You lay out your ingredients and begin synthesis. Carefully measuring each compound using molarity calculations, the mixture turns a luminous pink — but you notice it looks slightly off. Something is missing.",
+    outcome:{ type:"neutral", text:"~ Synthesis started. You need one more ingredient." },
+    chemFact:{ icon:"⚗️", label:"Chem Concept: Molarity", text:"Each ingredient is dissolved at a precise <strong>molarity (M = mol/L)</strong>. If you need 0.05 M PEA in 200 mL, that's 0.05 × 0.2 = <strong>0.01 mol</strong>. This requires knowing <strong>molar mass</strong> and careful stoichiometry." },
+    choices:[
+      { icon:"🏃", text:"Run to the nurse's office — get the last ingredient", label:"There's still time", next:9 },
+      { icon:"✅", text:"Finalize the potion with what you have", label:"It might still work...", next:10 }
+    ]
+  },
+  {
+    id:9, chapter:"Chapter 3: The Synthesis", location:"Nurse's Office", bg:"nurse",
+    speaker:"Nurse Rivera",
+    dialogue:"Looking for something? Dr. Vela asked me to hold this — pure phenylethylamine solution, the 'molecule of love.' It's yours if you tell me: what bond holds its amine group together? ...Covalent. Exactly. Here you go.",
+    outcome:{ type:"good", text:"✓ Phenylethylamine (PEA) solution collected!" }, item:"💗 Phenylethylamine (PEA)",
+    chemFact:{ icon:"💗", label:"Ingredient #5 Found — The Key Molecule", text:"<strong>Phenylethylamine (PEA)</strong>, C₈H₁₁N, is a trace amine that stimulates dopamine and norepinephrine release during attraction. Structure: benzene ring + ethyl chain + amine group, all joined by <strong>covalent bonds</strong>." },
+    choices:[
+      { icon:"🔬", text:"Return to the lab and complete the potion", label:"You have everything!", next:11 }
+    ]
+  },
+  {
+    id:10, chapter:"Ending: Incomplete Formula", location:"Chemistry Lab", bg:"lab",
+    speaker:"Dr. Vela",
+    dialogue:"You've created something... but it's missing the PEA. Without phenylethylamine, you have a pleasant aromatherapy blend, not a Love Potion. Not bad chemistry — but the quest continues. Try again?",
+    outcome:{ type:"bad", text:"✗ Incomplete potion — missing PEA!" },
+    chemFact:{ icon:"🔁", label:"What Went Wrong", text:"Without <strong>phenylethylamine</strong>, the potion lacks its primary dopaminergic trigger. Like a reaction missing a catalyst — the other reagents are present, but <strong>activation energy</strong> can't be overcome. Every molecule matters in a synthesis!" },
+    isEnd:true, endType:"incomplete"
+  },
+  {
+    id:11, chapter:"Ending: The Love Potion", location:"Chemistry Lab", bg:"lab",
+    speaker:"Dr. Vela",
+    dialogue:"Remarkable. You've assembled all five compounds. The solution glows pink — a real neurochemical cocktail of joy, calm, and connection. This is exactly what chemistry is: the science of what makes us human.",
+    outcome:{ type:"good", text:"✓ Love Potion fully synthesized!" },
+    chemFact:{ icon:"✨", label:"Complete Synthesis", text:"Your potion: <strong>PEA</strong> (dopaminergic) + <strong>Theobromine</strong> (stimulant) + <strong>Rhodiola</strong> (serotonergic) + <strong>Linalool</strong> (anxiolytic) + <strong>Vanillin</strong> (mood enhancer). Together they create an <strong>entourage effect</strong> across multiple neurotransmitter systems." },
+    isEnd:true, endType:"complete"
+  }
+];
+
+// =====================================================================
+// GAME STATE + ENGINE
+// =====================================================================
+let state = { sceneId:0, items:[], history:[] };
+const TOTAL = 11;
+
+function startGame() {
+  document.getElementById('title-screen').classList.add('fade-out');
+  const g = document.getElementById('game');
+  g.style.display = 'flex';
+  g.style.flexDirection = 'column';
+  setTimeout(() => document.getElementById('title-screen').style.display='none', 800);
+  renderScene(0);
+}
+
+function renderScene(id) {
+  state.sceneId = id;
+  state.history.push(id);
+  const s = SCENES[id];
+
+  document.getElementById('chapter-label').textContent = s.chapter;
+
+  const pct = Math.round((id / TOTAL) * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '%';
+
+  // Build scene SVG
+  const bgFn = BKGS[s.bg] || (() => '');
+  const chars = SCENE_CHARS[id] || [];
+  const charsSvg = chars.map(c => buildChar(c.key, c.cx, c.ground, c.facing, c.hold, c.cls)).join('');
+  const stageSvg = `<svg viewBox="0 0 800 260" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%;">
+    ${bgFn()}
+    ${charsSvg}
+  </svg>`;
+
+  document.getElementById('scene-stage').innerHTML = stageSvg;
+  document.getElementById('loc-tag').textContent = s.location;
+
+  // Speaker portrait
+  const speakerKey = SPEAKER_CHAR[s.speaker] || 'player';
+  const bgColors = { vela:'#0c1f35', park:'#2d0a1a', chen:'#041f13', rivera:'#0d1520', player:'#1a0d2e' };
+  document.getElementById('speaker-avatar-small').innerHTML = buildPortrait(speakerKey, bgColors[speakerKey]);
+  document.getElementById('speaker-name').textContent = s.speaker;
+  document.getElementById('dialogue-text').textContent = '';
+  typeText('dialogue-text', s.dialogue);
+
+  if (s.item)  addItem(s.item);
+  if (s.item2) addItem(s.item2);
+  renderItems();
+
+  // Chem fact
+  const ca = document.getElementById('chem-fact-area');
+  ca.innerHTML = s.chemFact ? `<div class="chem-fact">
+    <span class="chem-icon">${s.chemFact.icon}</span>
+    <div>
+      <div class="chem-label">🔬 ${s.chemFact.label}</div>
+      <div class="chem-text">${s.chemFact.text}</div>
+    </div>
+  </div>` : '';
+
+  // Outcome
+  const oa = document.getElementById('outcome-area');
+  oa.innerHTML = s.outcome ? `<div class="outcome-flash ${s.outcome.type}">${s.outcome.text}</div>` : '';
+
+  // Choices
+  const qa = document.getElementById('choices-area');
+  qa.innerHTML = '';
+  if (s.isEnd) { renderEnd(s); return; }
+
+  setTimeout(() => {
+    const box = document.createElement('div');
+    box.className = 'choices-container';
+    s.choices.forEach(ch => {
+      const btn = document.createElement('button');
+      btn.className = 'choice-btn';
+      btn.innerHTML = `<span class="choice-icon">${ch.icon}</span><div><div class="choice-text">${ch.text}</div><div class="choice-label">${ch.label}</div></div>`;
+      btn.onclick = () => {
+        box.querySelectorAll('.choice-btn').forEach(b => b.disabled=true);
+        btn.style.borderColor='var(--accent)';
+        btn.style.background='rgba(192,132,252,0.2)';
+        setTimeout(() => renderScene(ch.next), 480);
+      };
+      box.appendChild(btn);
+    });
+    qa.appendChild(box);
+  }, 380);
+}
+
+function renderEnd(s) {
+  const qa = document.getElementById('choices-area');
+  const ok = s.endType === 'complete';
+  const recipe = ok ? `<div class="potion-recipe">
+    <div class="recipe-title">Final Love Potion Recipe</div>
+    <div class="recipe-item"><span class="ri-dot">▸</span> Phenylethylamine (PEA) — C₈H₁₁N — dopamine trigger</div>
+    <div class="recipe-item"><span class="ri-dot">▸</span> Theobromine — C₇H₈N₄O₂ — mood elevator</div>
+    <div class="recipe-item"><span class="ri-dot">▸</span> Rhodiola rosea extract — serotonin regulator</div>
+    <div class="recipe-item"><span class="ri-dot">▸</span> Linalool (Lavender) — GABA receptor calmer</div>
+    <div class="recipe-item"><span class="ri-dot">▸</span> Vanillin — C₈H₈O₃ — dopaminergic boost</div>
+    <div class="recipe-item"><span class="ri-dot">▸</span> Mix at pH 7.4 in aqueous solution at 37°C</div>
+  </div>` : '';
+  qa.innerHTML = `<div class="end-screen">
+    <div style="font-size:3rem;margin-bottom:1rem;">${ok?'💗':'🧪'}</div>
+    <h2>${ok?'Love Potion Complete!':'Quest Incomplete'}</h2>
+    <p>${ok
+      ? 'You made every right choice. All five neurochemical ingredients combined — a beautiful example of how chemistry underlies human emotion.'
+      : 'Your potion is missing a key ingredient. The best chemists learn from incomplete reactions. Try again and make different choices!'
+    }</p>
+    ${recipe}
+    <button class="restart-btn" onclick="restartGame()">↺ Play Again</button>
+  </div>`;
+  document.getElementById('progress-fill').style.width='100%';
+  document.getElementById('progress-pct').textContent='100%';
+}
+
+function addItem(item) { if (!state.items.includes(item)) state.items.push(item); }
+
+function renderItems() {
+  document.getElementById('items-bar').innerHTML =
+    state.items.map(i => `<div class="item-badge">${i}</div>`).join('');
+}
+
+function typeText(id, text) {
+  const el = document.getElementById(id);
+  el.textContent = '';
+  let i = 0;
+  (function tick() { if (i < text.length) { el.textContent += text[i++]; setTimeout(tick, 20); } })();
+}
+
+function restartGame() {
+  state = { sceneId:0, items:[], history:[] };
+  document.getElementById('items-bar').innerHTML='';
+  renderScene(0);
+}
+</script>
+</body>
+</html>
