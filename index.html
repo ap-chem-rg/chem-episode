@@ -3,864 +3,862 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chemistry of Love — An Episode Story</title>
+<title>What Makes People Fall in Love? Chem Hunt</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0d0b14;
-    --panel: #16121f;
-    --accent: #c084fc;
-    --accent2: #f472b6;
-    --gold: #fbbf24;
-    --text: #f1e9ff;
-    --muted: #a78bbb;
-    --choice-bg: rgba(192,132,252,0.08);
-    --choice-hover: rgba(192,132,252,0.18);
-    --choice-border: rgba(192,132,252,0.3);
-    --success: #34d399;
-    --danger: #f87171;
-    --info: #60a5fa;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: var(--bg);
-    font-family: 'Lato', sans-serif;
-    color: var(--text);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    overflow-x: hidden;
-  }
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.4) 0%, transparent 100%),
-      radial-gradient(1px 1px at 25% 60%, rgba(255,255,255,0.3) 0%, transparent 100%),
-      radial-gradient(1.5px 1.5px at 40% 30%, rgba(255,255,255,0.5) 0%, transparent 100%),
-      radial-gradient(1px 1px at 60% 80%, rgba(255,255,255,0.3) 0%, transparent 100%),
-      radial-gradient(1px 1px at 75% 20%, rgba(255,255,255,0.4) 0%, transparent 100%),
-      radial-gradient(1.5px 1.5px at 85% 55%, rgba(255,255,255,0.35) 0%, transparent 100%);
-    pointer-events: none;
-    z-index: 0;
-  }
+:root {
+  --bg:#0d0b14; --panel:#16121f; --panel2:#1e1729;
+  --accent:#c084fc; --accent2:#f472b6; --gold:#fbbf24;
+  --text:#f1e9ff; --muted:#a78bbb;
+  --cbg:rgba(192,132,252,0.08); --chov:rgba(192,132,252,0.18); --cbor:rgba(192,132,252,0.3);
+  --ok:#34d399; --bad:#f87171; --info:#60a5fa;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);font-family:'Lato',sans-serif;color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(1px 1px at 10% 15%,rgba(255,255,255,0.4) 0%,transparent 100%),radial-gradient(1px 1px at 30% 55%,rgba(255,255,255,0.3) 0%,transparent 100%),radial-gradient(1.5px 1.5px at 50% 25%,rgba(255,255,255,0.45) 0%,transparent 100%),radial-gradient(1px 1px at 70% 75%,rgba(255,255,255,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 85% 20%,rgba(255,255,255,0.35) 0%,transparent 100%),radial-gradient(1.5px 1.5px at 90% 60%,rgba(255,255,255,0.3) 0%,transparent 100%);pointer-events:none;z-index:0;}
 
-  /* ---- TITLE SCREEN ---- */
-  #title-screen {
-    position: fixed; inset: 0;
-    background: linear-gradient(160deg, #0d0b14 0%, #1a0d2e 50%, #0d0b14 100%);
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    z-index: 100; transition: opacity 0.8s ease;
-  }
-  #title-screen.fade-out { opacity: 0; pointer-events: none; }
-  .title-glow { text-align: center; margin-bottom: 2rem; }
-  .title-glow h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(2.2rem, 6vw, 4rem);
-    background: linear-gradient(135deg, #c084fc, #f472b6, #fbbf24);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    line-height: 1.2; margin-bottom: 0.5rem;
-    animation: shimmer 3s ease-in-out infinite alternate;
-  }
-  @keyframes shimmer { from { filter: brightness(1); } to { filter: brightness(1.3); } }
-  .title-glow .subtitle { font-size: 1rem; color: var(--muted); letter-spacing: 0.3em; text-transform: uppercase; }
-  .title-glow .course-tag {
-    display: inline-block; margin-top: 1rem; padding: 0.3rem 1rem;
-    border: 1px solid var(--choice-border); border-radius: 20px;
-    font-size: 0.75rem; color: var(--accent); letter-spacing: 0.15em;
-  }
-  .flask-svg { margin: 1.5rem 0; animation: float 3s ease-in-out infinite; }
-  @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-  .start-btn {
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    color: white; border: none; padding: 0.9rem 3rem; border-radius: 50px;
-    font-family: 'Lato', sans-serif; font-size: 1.1rem; font-weight: 700;
-    letter-spacing: 0.1em; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
-    text-transform: uppercase;
-  }
-  .start-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(192,132,252,0.4); }
+/* === TITLE SCREEN === */
+#title-screen{position:fixed;inset:0;background:linear-gradient(160deg,#0d0b14 0%,#1a0d2e 50%,#0d0b14 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100;transition:opacity 0.8s ease;}
+#title-screen.fade-out{opacity:0;pointer-events:none;}
+.title-glow{text-align:center;margin-bottom:1.5rem;}
+.title-glow h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,5vw,3.5rem);background:linear-gradient(135deg,#c084fc,#f472b6,#fbbf24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.2;margin-bottom:0.4rem;animation:shimmer 3s ease-in-out infinite alternate;}
+@keyframes shimmer{from{filter:brightness(1);}to{filter:brightness(1.3);}}
+.title-glow .subtitle{font-size:0.85rem;color:var(--muted);letter-spacing:0.25em;text-transform:uppercase;}
+.title-glow .course-tag{display:inline-block;margin-top:0.8rem;padding:0.25rem 0.9rem;border:1px solid var(--cbor);border-radius:20px;font-size:0.72rem;color:var(--accent);letter-spacing:0.12em;}
+.flask-anim{margin:1rem 0;animation:float 3s ease-in-out infinite;}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+.start-btn{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;padding:0.85rem 2.5rem;border-radius:50px;font-family:'Lato',sans-serif;font-size:1rem;font-weight:700;letter-spacing:0.1em;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;text-transform:uppercase;}
+.start-btn:hover{transform:scale(1.05);box-shadow:0 0 28px rgba(192,132,252,0.45);}
 
-  /* ---- GAME ---- */
-  #game {
-    position: relative; z-index: 1; width: 100%; max-width: 800px;
-    min-height: 100vh; flex-direction: column; padding: 1rem; display: none;
-  }
-  .progress-bar-wrap {
-    display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem;
-    margin-bottom: 1rem; background: var(--panel); border-radius: 12px;
-    border: 1px solid rgba(192,132,252,0.1);
-  }
-  .progress-label { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; white-space: nowrap; }
-  .progress-track { flex: 1; height: 6px; background: rgba(255,255,255,0.08); border-radius: 99px; overflow: hidden; }
-  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 99px; transition: width 0.6s ease; }
-  .progress-pct { font-size: 0.75rem; color: var(--accent); font-weight: 700; }
+/* === CHARACTER SELECT === */
+#char-select{position:fixed;inset:0;background:linear-gradient(160deg,#0d0b14 0%,#1a0d2e 50%,#0d0b14 100%);display:none;flex-direction:column;align-items:center;justify-content:flex-start;padding:2rem 1rem 1rem;z-index:99;overflow-y:auto;}
+#char-select h2{font-family:'Playfair Display',serif;font-size:1.8rem;background:linear-gradient(135deg,#c084fc,#f472b6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.4rem;text-align:center;}
+#char-select p{color:var(--muted);font-size:0.85rem;margin-bottom:1.5rem;text-align:center;}
+.char-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:0.85rem;width:100%;max-width:780px;margin-bottom:1.5rem;}
+.char-card{background:var(--panel);border:2px solid rgba(192,132,252,0.15);border-radius:14px;padding:0.85rem 0.5rem;cursor:pointer;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:0.5rem;}
+.char-card:hover{border-color:var(--accent);background:rgba(192,132,252,0.1);transform:translateY(-2px);}
+.char-card.selected{border-color:var(--accent2);background:rgba(244,114,182,0.12);box-shadow:0 0 16px rgba(244,114,182,0.2);}
+.char-card svg{width:70px;height:90px;}
+.char-card .char-cname{font-family:'Playfair Display',serif;font-size:0.85rem;color:var(--text);text-align:center;}
+.confirm-btn{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;padding:0.8rem 2.5rem;border-radius:50px;font-family:'Lato',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;text-transform:uppercase;letter-spacing:0.08em;opacity:0.4;pointer-events:none;}
+.confirm-btn.active{opacity:1;pointer-events:auto;}
+.confirm-btn.active:hover{transform:scale(1.04);box-shadow:0 0 20px rgba(192,132,252,0.4);}
 
-  /* ---- SCENE PANEL ---- */
-  .scene-panel {
-    background: var(--panel); border-radius: 16px;
-    border: 1px solid rgba(192,132,252,0.12); overflow: hidden; margin-bottom: 1rem;
-  }
-  .scene-stage {
-    width: 100%; height: 260px; position: relative; overflow: hidden;
-  }
-  .scene-stage svg { width: 100%; height: 100%; }
+/* === GAME === */
+#game{position:relative;z-index:1;width:100%;max-width:800px;min-height:100vh;flex-direction:column;padding:1rem;display:none;}
+.top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem;}
+.top-bar h2{font-family:'Playfair Display',serif;font-size:0.95rem;color:var(--accent);}
+.chapter-label{font-size:0.68rem;color:var(--muted);letter-spacing:0.08em;}
+.progress-bar-wrap{display:flex;align-items:center;gap:0.7rem;padding:0.65rem 0.9rem;margin-bottom:0.85rem;background:var(--panel);border-radius:12px;border:1px solid rgba(192,132,252,0.1);}
+.progress-label{font-size:0.65rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;white-space:nowrap;}
+.progress-track{flex:1;height:5px;background:rgba(255,255,255,0.07);border-radius:99px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px;transition:width 0.6s ease;}
+.progress-pct{font-size:0.72rem;color:var(--accent);font-weight:700;}
 
-  .scene-location-tag {
-    position: absolute; top: 12px; left: 12px;
-    background: rgba(13,11,20,0.8); border: 1px solid var(--choice-border);
-    padding: 0.3rem 0.75rem; border-radius: 20px; font-size: 0.7rem;
-    color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase;
-    z-index: 10; pointer-events: none;
-  }
+/* scene panel */
+.scene-panel{background:var(--panel);border-radius:16px;border:1px solid rgba(192,132,252,0.12);overflow:hidden;margin-bottom:0.85rem;position:relative;}
+.scene-stage{width:100%;height:250px;position:relative;overflow:hidden;}
+.loc-tag{position:absolute;top:10px;left:10px;background:rgba(13,11,20,0.82);border:1px solid var(--cbor);padding:0.25rem 0.7rem;border-radius:20px;font-size:0.67rem;color:var(--accent);letter-spacing:0.1em;text-transform:uppercase;z-index:10;pointer-events:none;}
+.dialogue-box{padding:1rem 1.25rem;border-top:1px solid rgba(192,132,252,0.1);display:flex;gap:0.8rem;align-items:flex-start;}
+.spk-avatar{width:40px;height:40px;border-radius:50%;flex-shrink:0;border:2px solid rgba(192,132,252,0.35);overflow:hidden;background:#1e1729;}
+.spk-avatar svg{width:100%;height:100%;}
+.dialogue-inner{}
+.spk-name{font-family:'Playfair Display',serif;font-size:0.8rem;color:var(--accent);font-weight:700;letter-spacing:0.05em;margin-bottom:0.25rem;}
+.dlg-text{font-size:0.9rem;line-height:1.65;color:var(--text);min-height:2.6rem;}
 
-  /* character slide-in */
-  @keyframes char-enter-left { from { opacity:0; transform: translateX(-30px); } to { opacity:1; transform: translateX(0); } }
-  @keyframes char-enter-right { from { opacity:0; transform: translateX(30px); } to { opacity:1; transform: translateX(0); } }
-  @keyframes char-enter-center { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
-  .char-left  { animation: char-enter-left  0.5s ease forwards; }
-  .char-right { animation: char-enter-right 0.5s ease forwards; }
-  .char-center{ animation: char-enter-center 0.5s ease forwards; }
+/* answer box */
+.answer-box{background:rgba(251,191,36,0.07);border:1px solid rgba(251,191,36,0.25);border-radius:12px;padding:0.75rem 1rem;margin-bottom:0.8rem;animation:slide-in 0.4s ease;}
+.answer-label{font-size:0.62rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--gold);font-weight:700;margin-bottom:0.2rem;}
+.answer-text{font-size:0.82rem;line-height:1.5;color:var(--text);}
 
-  /* idle breathing */
-  @keyframes breathe { 0%,100%{transform:scaleY(1) translateY(0)} 50%{transform:scaleY(1.015) translateY(-1px)} }
-  .idle { transform-origin: bottom center; animation: breathe 3s ease-in-out infinite; }
+/* chem fact */
+.chem-fact{background:linear-gradient(135deg,rgba(192,132,252,0.08),rgba(244,114,182,0.05));border:1px solid rgba(192,132,252,0.22);border-radius:12px;padding:0.75rem 0.9rem;margin-bottom:0.8rem;display:flex;gap:0.65rem;align-items:flex-start;animation:slide-in 0.4s ease;}
+@keyframes slide-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.chem-icon{font-size:1.1rem;flex-shrink:0;margin-top:0.1rem;}
+.chem-label{font-size:0.62rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--accent);font-weight:700;margin-bottom:0.12rem;}
+.chem-text{font-size:0.78rem;line-height:1.5;color:var(--muted);}
+.chem-text strong{color:var(--text);}
 
-  /* item float */
-  @keyframes item-float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
-  .item-float { animation: item-float 2s ease-in-out infinite; }
+/* outcome */
+.outcome-flash{padding:0.5rem 0.85rem;border-radius:8px;font-size:0.78rem;margin-bottom:0.65rem;display:flex;align-items:center;gap:0.4rem;animation:slide-in 0.3s ease;}
+.outcome-flash.good{background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.28);color:var(--ok);}
+.outcome-flash.bad{background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.28);color:var(--bad);}
+.outcome-flash.neutral{background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.28);color:var(--info);}
 
-  /* talking mouth blink */
-  @keyframes talk { 0%,100%{d:path("M-5,0 Q0,3 5,0")} 50%{d:path("M-5,0 Q0,6 5,0")} }
+/* choices */
+.choices-container{display:flex;flex-direction:column;gap:0.5rem;margin-bottom:0.85rem;}
+.choice-btn{background:var(--cbg);border:1px solid var(--cbor);border-radius:12px;padding:0.75rem 1.05rem;color:var(--text);font-family:'Lato',sans-serif;font-size:0.87rem;text-align:left;cursor:pointer;transition:all 0.2s ease;display:flex;align-items:center;gap:0.65rem;line-height:1.4;}
+.choice-btn:hover{background:var(--chov);border-color:var(--accent);transform:translateX(4px);}
+.choice-icon{font-size:1rem;flex-shrink:0;}
+.choice-sub{font-size:0.67rem;color:var(--muted);margin-top:0.1rem;}
 
-  /* dialogue box */
-  .dialogue-box {
-    padding: 1.1rem 1.4rem; border-top: 1px solid rgba(192,132,252,0.1);
-    display: flex; gap: 0.85rem; align-items: flex-start;
-  }
-  .speaker-avatar-small {
-    width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
-    border: 2px solid rgba(192,132,252,0.35); overflow: hidden; background: #1e1729;
-  }
-  .speaker-avatar-small svg { width: 100%; height: 100%; }
-  .dialogue-inner {}
-  .speaker-name {
-    font-family: 'Playfair Display', serif; font-size: 0.82rem;
-    color: var(--accent); font-weight: 700; letter-spacing: 0.05em; margin-bottom: 0.3rem;
-  }
-  .dialogue-text { font-size: 0.92rem; line-height: 1.65; color: var(--text); min-height: 2.8rem; }
+/* items bar */
+.items-bar{display:flex;gap:0.45rem;flex-wrap:wrap;margin-bottom:0.8rem;min-height:0;}
+.item-badge{background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.28);border-radius:20px;padding:0.18rem 0.6rem;font-size:0.68rem;color:var(--gold);display:flex;align-items:center;gap:0.25rem;animation:pop-in 0.3s cubic-bezier(0.34,1.56,0.64,1);}
+@keyframes pop-in{from{opacity:0;transform:scale(0.7)}to{opacity:1;transform:scale(1)}}
 
-  /* chem fact */
-  .chem-fact {
-    background: linear-gradient(135deg, rgba(192,132,252,0.08), rgba(244,114,182,0.06));
-    border: 1px solid rgba(192,132,252,0.25); border-radius: 12px;
-    padding: 0.8rem 1rem; margin-bottom: 0.85rem;
-    display: flex; gap: 0.7rem; align-items: flex-start;
-    animation: slide-in 0.4s ease;
-  }
-  @keyframes slide-in { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-  .chem-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 0.1rem; }
-  .chem-label { font-size: 0.63rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); font-weight: 700; margin-bottom: 0.15rem; }
-  .chem-text { font-size: 0.8rem; line-height: 1.5; color: var(--muted); }
-  .chem-text strong { color: var(--text); }
+/* end screen */
+.end-screen{background:var(--panel);border-radius:16px;border:1px solid rgba(192,132,252,0.2);padding:1.75rem;text-align:center;animation:slide-in 0.5s ease;}
+.end-screen h2{font-family:'Playfair Display',serif;font-size:1.6rem;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.5rem;}
+.end-screen p{color:var(--muted);font-size:0.85rem;line-height:1.7;margin-bottom:0.9rem;}
+.end-facts{background:rgba(192,132,252,0.07);border:1px solid rgba(192,132,252,0.18);border-radius:12px;padding:0.9rem;text-align:left;margin-bottom:1.25rem;}
+.end-fact-item{display:flex;gap:0.5rem;font-size:0.78rem;color:var(--text);padding:0.25rem 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+.end-fact-item:last-child{border-bottom:none;}
+.end-fact-item .dot{color:var(--accent);}
+.reset-btn{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;padding:0.72rem 2.2rem;border-radius:50px;font-family:'Lato',sans-serif;font-size:0.92rem;font-weight:700;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;text-transform:uppercase;letter-spacing:0.08em;}
+.reset-btn:hover{transform:scale(1.04);box-shadow:0 0 18px rgba(192,132,252,0.35);}
 
-  /* outcome */
-  .outcome-flash {
-    padding: 0.55rem 0.9rem; border-radius: 8px; font-size: 0.8rem;
-    margin-bottom: 0.7rem; display: flex; align-items: center; gap: 0.45rem;
-    animation: slide-in 0.3s ease;
-  }
-  .outcome-flash.good  { background: rgba(52,211,153,0.12); border: 1px solid rgba(52,211,153,0.3); color: var(--success); }
-  .outcome-flash.bad   { background: rgba(248,113,113,0.12); border: 1px solid rgba(248,113,113,0.3); color: var(--danger); }
-  .outcome-flash.neutral { background: rgba(96,165,250,0.12); border: 1px solid rgba(96,165,250,0.3); color: var(--info); }
-
-  /* choices */
-  .choices-container { display: flex; flex-direction: column; gap: 0.55rem; margin-bottom: 1rem; }
-  .choice-btn {
-    background: var(--choice-bg); border: 1px solid var(--choice-border); border-radius: 12px;
-    padding: 0.8rem 1.1rem; color: var(--text); font-family: 'Lato', sans-serif;
-    font-size: 0.88rem; text-align: left; cursor: pointer;
-    transition: all 0.2s ease; display: flex; align-items: center; gap: 0.7rem; line-height: 1.4;
-  }
-  .choice-btn:hover { background: var(--choice-hover); border-color: var(--accent); transform: translateX(4px); }
-  .choice-icon { font-size: 1.05rem; flex-shrink: 0; }
-  .choice-label { font-size: 0.68rem; color: var(--muted); margin-top: 0.12rem; }
-
-  /* items */
-  .items-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.85rem; }
-  .item-badge {
-    background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.3);
-    border-radius: 20px; padding: 0.2rem 0.6rem; font-size: 0.7rem; color: var(--gold);
-    display: flex; align-items: center; gap: 0.3rem;
-    animation: pop-in 0.3s cubic-bezier(0.34,1.56,0.64,1);
-  }
-  @keyframes pop-in { from{opacity:0;transform:scale(0.7)} to{opacity:1;transform:scale(1)} }
-
-  /* end screen */
-  .end-screen {
-    background: var(--panel); border-radius: 16px; border: 1px solid rgba(192,132,252,0.2);
-    padding: 2rem; text-align: center; animation: slide-in 0.5s ease;
-  }
-  .end-screen h2 {
-    font-family: 'Playfair Display', serif; font-size: 1.8rem;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    margin-bottom: 0.5rem;
-  }
-  .end-screen p { color: var(--muted); font-size: 0.88rem; line-height: 1.7; margin-bottom: 1rem; }
-  .recipe-title { font-size: 0.67rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--accent); margin-bottom: 0.7rem; }
-  .potion-recipe {
-    background: rgba(192,132,252,0.07); border: 1px solid rgba(192,132,252,0.2);
-    border-radius: 12px; padding: 1rem; text-align: left; margin-bottom: 1.5rem;
-  }
-  .recipe-item { display: flex; gap: 0.5rem; font-size: 0.8rem; color: var(--text); padding: 0.28rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-  .recipe-item:last-child { border-bottom: none; }
-  .recipe-item .ri-dot { color: var(--accent); }
-  .restart-btn {
-    background: linear-gradient(135deg, var(--accent), var(--accent2)); color: white;
-    border: none; padding: 0.75rem 2.5rem; border-radius: 50px;
-    font-family: 'Lato', sans-serif; font-size: 0.95rem; font-weight: 700;
-    cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
-    text-transform: uppercase; letter-spacing: 0.08em;
-  }
-  .restart-btn:hover { transform: scale(1.04); box-shadow: 0 0 20px rgba(192,132,252,0.35); }
+/* character animations */
+@keyframes char-left{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:translateX(0)}}
+@keyframes char-right{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:translateX(0)}}
+@keyframes char-center{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.cl{animation:char-left 0.5s ease forwards;}
+.cr{animation:char-right 0.5s ease forwards;}
+.cc{animation:char-center 0.5s ease forwards;}
+@keyframes breathe{0%,100%{transform:scaleY(1) translateY(0)}50%{transform:scaleY(1.015) translateY(-1px)}}
+.idle{transform-origin:bottom center;animation:breathe 3.2s ease-in-out infinite;}
+@keyframes ifloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.ifloat{animation:ifloat 2s ease-in-out infinite;}
 </style>
 </head>
 <body>
 
-<!-- TITLE SCREEN -->
+<!-- TITLE -->
 <div id="title-screen">
   <div class="title-glow">
-    <h1>Chemistry of Love</h1>
-    <div class="subtitle">An Episode Story</div>
-    <div class="course-tag">AP Chemistry · Molecular Bonds &amp; Reactions</div>
+    <h1>What Makes People<br>Fall in Love?</h1>
+    <div class="subtitle">A Chemistry Hunt</div>
+    <div class="course-tag">AP Chemistry · Greenwich High School</div>
   </div>
-  <svg class="flask-svg" width="80" height="100" viewBox="0 0 90 110">
-    <defs>
-      <linearGradient id="pg" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#c084fc" stop-opacity="0.9"/>
-        <stop offset="100%" stop-color="#f472b6" stop-opacity="0.8"/>
-      </linearGradient>
-    </defs>
+  <svg class="flask-anim" width="72" height="92" viewBox="0 0 90 110">
+    <defs><linearGradient id="pg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c084fc" stop-opacity="0.9"/><stop offset="100%" stop-color="#f472b6" stop-opacity="0.8"/></linearGradient></defs>
     <path d="M32 5 L32 45 L8 85 Q4 95 12 102 L78 102 Q86 95 82 85 L58 45 L58 5 Z" fill="none" stroke="rgba(192,132,252,0.5)" stroke-width="2"/>
     <path d="M32 5 L58 5" stroke="rgba(192,132,252,0.5)" stroke-width="2"/>
     <path d="M36 45 L14 82 Q11 90 18 95 L72 95 Q79 90 76 82 L54 45 Z" fill="url(#pg)" opacity="0.8"/>
-    <circle cx="28" cy="75" r="4" fill="rgba(255,255,255,0.45)"/>
-    <circle cx="55" cy="82" r="3" fill="rgba(255,255,255,0.35)"/>
-    <circle cx="40" cy="88" r="2.5" fill="rgba(255,255,255,0.4)"/>
+    <circle cx="28" cy="74" r="4" fill="rgba(255,255,255,0.4)"/><circle cx="54" cy="82" r="3" fill="rgba(255,255,255,0.35)"/><circle cx="40" cy="88" r="2.5" fill="rgba(255,255,255,0.4)"/>
   </svg>
-  <button class="start-btn" onclick="startGame()">Begin Story</button>
-  <p style="margin-top:1.5rem;font-size:0.72rem;color:rgba(167,139,187,0.5);letter-spacing:0.05em;">Tap choices to shape your path</p>
+  <button class="start-btn" onclick="goToCharSelect()">Choose Your Character</button>
+  <p style="margin-top:1.2rem;font-size:0.7rem;color:rgba(167,139,187,0.45);letter-spacing:0.05em;">Make choices · Discover the chemistry of love</p>
+</div>
+
+<!-- CHARACTER SELECT -->
+<div id="char-select">
+  <h2>Who Are You?</h2>
+  <p>Choose your character to begin the hunt</p>
+  <div class="char-grid" id="char-grid"></div>
+  <button class="confirm-btn" id="confirm-btn" onclick="confirmChar()">Let's Go ✦</button>
 </div>
 
 <!-- GAME -->
 <div id="game">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
-    <h2 style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--accent);">Chemistry of Love</h2>
-    <span id="chapter-label" style="font-size:0.7rem;color:var(--muted);letter-spacing:0.08em;"></span>
+  <div class="top-bar">
+    <h2>Chemistry Hunt</h2>
+    <span class="chapter-label" id="chapter-label"></span>
   </div>
   <div class="progress-bar-wrap">
     <span class="progress-label">Progress</span>
     <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
     <span class="progress-pct" id="progress-pct">0%</span>
   </div>
-  <div id="items-bar" class="items-bar"></div>
+  <div class="items-bar" id="items-bar"></div>
   <div class="scene-panel">
     <div class="scene-stage" id="scene-stage"></div>
-    <div class="scene-location-tag" id="loc-tag"></div>
+    <div class="loc-tag" id="loc-tag"></div>
     <div class="dialogue-box">
-      <div class="speaker-avatar-small" id="speaker-avatar-small"></div>
+      <div class="spk-avatar" id="spk-avatar"></div>
       <div class="dialogue-inner">
-        <div class="speaker-name" id="speaker-name"></div>
-        <div class="dialogue-text" id="dialogue-text"></div>
+        <div class="spk-name" id="spk-name"></div>
+        <div class="dlg-text" id="dlg-text"></div>
       </div>
     </div>
   </div>
-  <div id="chem-fact-area"></div>
+  <div id="answer-area"></div>
+  <div id="chem-area"></div>
   <div id="outcome-area"></div>
   <div id="choices-area"></div>
 </div>
 
 <script>
-// =====================================================================
-// CHARACTER SVG BUILDERS
-// Each returns an SVG <g> string positioned at (cx, groundY)
-// Characters are ~110px tall standing figures, Episode-visual-novel style
-// =====================================================================
+// ============================================================
+// PLAYABLE CHARACTERS
+// ============================================================
+const PLAYABLE = [
+  { id:'hannah', name:'Hannah', desc:'Blonde, straight hair', hair:'#F5E28C', skin:'#F5D5B8', outfit:'#6d28d9', hairStyle:'straight-long', glasses:false, curly:false },
+  { id:'addy',   name:'Addy',   desc:'Straight black hair', hair:'#1a1a1a', skin:'#F0D0B5', outfit:'#be185d', hairStyle:'straight-long', glasses:false, curly:false },
+  { id:'charlie',name:'Charlie',desc:'Asian, glasses',       hair:'#111111', skin:'#E8C99A', outfit:'#1d4ed8', hairStyle:'short',        glasses:true,  curly:false },
+  { id:'yihan',  name:'Yihan',  desc:'Asian, black hair',    hair:'#111111', skin:'#E8C89A', outfit:'#065f46', hairStyle:'straight-med',  glasses:false, curly:false },
+  { id:'niko',   name:'Niko',   desc:'Curly brown hair',     hair:'#7B4A2D', skin:'#F2D0B0', outfit:'#92400e', hairStyle:'curly-short',   glasses:false, curly:true  },
+  { id:'sophia', name:'Sophia', desc:'Curly long brown hair',hair:'#7B4A2D', skin:'#F2D0B0', outfit:'#9d174d', hairStyle:'curly-long',    glasses:false, curly:true  },
+  { id:'vihaan', name:'Vihaan', desc:'Indian, black hair',   hair:'#0f0f0f', skin:'#C9935A', outfit:'#1e3a5f', hairStyle:'short',        glasses:false, curly:false },
+  { id:'alexa',  name:'Alexa',  desc:'Brown straight hair',  hair:'#5C3A1E', skin:'#F2D0B0', outfit:'#7c3aed', hairStyle:'straight-med',  glasses:false, curly:false },
+  { id:'zain',   name:'Zain',   desc:'Curly black hair, tan',hair:'#111111', skin:'#C9935A', outfit:'#064e3b', hairStyle:'curly-short',   glasses:false, curly:true  },
+  { id:'benny',  name:'Benny',  desc:'Brown hair, easygoing',hair:'#7B4A2D', skin:'#F5D5B8', outfit:'#1e3a5f', hairStyle:'short',        glasses:false, curly:false },
+];
 
-// Skin tones and outfit palettes per character
-const CHARS = {
-  player: { skin:'#F4C5A0', hair:'#3B2314', outfit:'#6d28d9', outline:'#4c1d95' },
-  vela:   { skin:'#C68642', hair:'#1a0a00', outfit:'#1e3a5f', outline:'#0c2340' },
-  park:   { skin:'#EFC89F', hair:'#5c2d0a', outfit:'#be185d', outline:'#9d174d' },
-  chen:   { skin:'#D4956A', hair:'#2d1a00', outfit:'#065f46', outline:'#064e3b' },
-  rivera: { skin:'#A0785A', hair:'#120800', outfit:'#1e3a8a', outline:'#1e3a8a' },
+// NPC characters
+const NPCS = {
+  vogel:  { name:'Mrs. Vogel', skin:'#F5D5C0', hair:'#6ec6f5', outfit:'#4a3f6b', hairStyle:'straight-med', glasses:true,  curly:false },
+  mayo:   { name:'Mr. Mayo',   skin:'#F5D5C0', hair:'#d4d4d4', outfit:'#374151', hairStyle:'short',        glasses:false, curly:false },
+  rachel: { name:'Rachel',     skin:'#F2D0B0', hair:'#5C3A1E', outfit:'#be185d', hairStyle:'straight-long',glasses:false, curly:false },
+  karolina:{ name:'Karolina', skin:'#F5E0D0', hair:'#F5E28C', outfit:'#1d4ed8', hairStyle:'straight-long',glasses:false, curly:false },
 };
 
-function buildChar(key, cx, groundY, facing='right', holdItem=null, classNames='') {
-  const c = CHARS[key];
-  const flip = facing === 'left' ? `scale(-1,1) translate(-${cx*2},0)` : '';
-  const gy = groundY; // feet Y
-  // body proportions (all relative to groundY)
-  const h = 115; // total height
-  const headR = 16;
-  const neckH = 6;
-  const torsoH = 38;
-  const legH = 40;
-  const footH = 8;
-  const armH = 32;
-
+// ============================================================
+// SVG CHARACTER BUILDER
+// ============================================================
+function buildChar(cfg, cx, groundY, facing, holdItem, animCls) {
+  const c = cfg;
+  const flip = facing === 'left' ? `scale(-1,1) translate(${-cx*2},0)` : '';
+  const gy = groundY;
+  const headR = 15, neckH = 5, torsoH = 36, legH = 38, footH = 7, armH = 30;
   const headCY = gy - legH - footH - torsoH - neckH - headR;
   const neckY  = gy - legH - footH - torsoH - neckH;
   const torsoY = gy - legH - footH - torsoH;
   const hipY   = gy - legH - footH;
-  const kneeY  = gy - footH - legH/2;
-  const footY  = gy - footH;
+  const shoulderY = torsoY + 5;
+  const handY  = shoulderY + armH;
 
-  // shoulder Y for arms
-  const shoulderY = torsoY + 6;
-  const elbowY = shoulderY + armH * 0.5;
-  const handY = shoulderY + armH;
-
-  // outfit detail: collar line
-  const collarY = torsoY + 8;
-
-  let itemSvg = '';
-  if (holdItem === 'flask') {
-    itemSvg = `
-      <g class="item-float" transform="translate(${cx+18}, ${handY - 22})">
-        <rect x="-8" y="0" width="16" height="20" rx="2" fill="#a78bfa" stroke="#7c3aed" stroke-width="1.5"/>
-        <rect x="-6" y="20" width="12" height="8" rx="1" fill="#7c3aed" opacity="0.6"/>
-        <rect x="-3" y="-5" width="6" height="6" rx="1" fill="#8b5cf6"/>
-        <circle cx="0" cy="10" r="4" fill="rgba(255,255,255,0.3)"/>
-      </g>`;
-  } else if (holdItem === 'book') {
-    itemSvg = `
-      <g class="item-float" transform="translate(${cx+18}, ${handY - 14})">
-        <rect x="-12" y="-10" width="24" height="20" rx="2" fill="#065f46" stroke="#064e3b" stroke-width="1.5"/>
-        <line x1="-12" y1="0" x2="12" y2="0" stroke="rgba(255,255,255,0.2)" stroke-width="0.5"/>
-        <rect x="-4" y="-7" width="8" height="14" rx="1" fill="rgba(255,255,255,0.15)"/>
-      </g>`;
-  } else if (holdItem === 'vial') {
-    itemSvg = `
-      <g class="item-float" transform="translate(${cx+16}, ${handY - 18})">
-        <rect x="-4" y="0" width="8" height="18" rx="3" fill="#f472b6" stroke="#be185d" stroke-width="1.2"/>
-        <rect x="-2" y="-4" width="4" height="5" fill="#be185d" rx="1"/>
-        <circle cx="0" cy="9" r="2.5" fill="rgba(255,255,255,0.35)"/>
-      </g>`;
-  } else if (holdItem === 'stethoscope') {
-    itemSvg = `
-      <g transform="translate(${cx+14}, ${shoulderY+6})">
-        <path d="M0,0 Q10,12 6,22" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round"/>
-        <circle cx="6" cy="22" r="5" fill="none" stroke="#6b7280" stroke-width="1.5"/>
-        <circle cx="6" cy="22" r="2" fill="#9ca3af"/>
-      </g>`;
+  // hair svg
+  let hairSvg = '';
+  const hs = c.hairStyle;
+  if (hs === 'straight-long') {
+    hairSvg = `<ellipse cx="${cx}" cy="${headCY-headR*0.5}" rx="${headR+1}" ry="${headR*0.7}" fill="${c.hair}"/>
+    <rect x="${cx-headR+2}" y="${headCY}" width="5" height="28" rx="2" fill="${c.hair}" opacity="0.9"/>
+    <rect x="${cx+headR-7}" y="${headCY}" width="5" height="28" rx="2" fill="${c.hair}" opacity="0.9"/>`;
+  } else if (hs === 'straight-med') {
+    hairSvg = `<ellipse cx="${cx}" cy="${headCY-headR*0.5}" rx="${headR+1}" ry="${headR*0.7}" fill="${c.hair}"/>
+    <rect x="${cx-headR+2}" y="${headCY}" width="5" height="14" rx="2" fill="${c.hair}" opacity="0.9"/>
+    <rect x="${cx+headR-7}" y="${headCY}" width="5" height="14" rx="2" fill="${c.hair}" opacity="0.9"/>`;
+  } else if (hs === 'curly-long') {
+    hairSvg = `<ellipse cx="${cx}" cy="${headCY-headR*0.5}" rx="${headR+3}" ry="${headR*0.85}" fill="${c.hair}"/>
+    <circle cx="${cx-headR+1}" cy="${headCY+8}" r="5" fill="${c.hair}"/>
+    <circle cx="${cx+headR-1}" cy="${headCY+8}" r="5" fill="${c.hair}"/>
+    <circle cx="${cx-headR}" cy="${headCY+18}" r="5" fill="${c.hair}"/>
+    <circle cx="${cx+headR}" cy="${headCY+18}" r="5" fill="${c.hair}"/>`;
+  } else if (hs === 'curly-short') {
+    hairSvg = `<ellipse cx="${cx}" cy="${headCY-headR*0.55}" rx="${headR+3}" ry="${headR*0.8}" fill="${c.hair}"/>
+    <circle cx="${cx-headR+2}" cy="${headCY+2}" r="4" fill="${c.hair}"/>
+    <circle cx="${cx+headR-2}" cy="${headCY+2}" r="4" fill="${c.hair}"/>`;
+  } else { // short
+    hairSvg = `<ellipse cx="${cx}" cy="${headCY-headR*0.6}" rx="${headR+1}" ry="${headR*0.65}" fill="${c.hair}"/>`;
   }
 
-  return `
-<g class="${classNames}" transform="${flip}">
-  <g class="idle" transform="translate(0,0)">
-    <!-- shadow -->
-    <ellipse cx="${cx}" cy="${gy+2}" rx="18" ry="4" fill="rgba(0,0,0,0.25)"/>
-    <!-- legs -->
-    <rect x="${cx-10}" y="${hipY}" width="9" height="${legH+footH}" rx="4" fill="${c.outfit}"/>
-    <rect x="${cx+1}" y="${hipY}" width="9" height="${legH+footH}" rx="4" fill="${c.outfit}"/>
-    <!-- feet -->
-    <ellipse cx="${cx-6}" cy="${gy}" rx="8" ry="${footH/2}" fill="${c.outline}"/>
-    <ellipse cx="${cx+6}" cy="${gy}" rx="8" ry="${footH/2}" fill="${c.outline}"/>
-    <!-- torso -->
-    <rect x="${cx-13}" y="${torsoY}" width="26" height="${torsoH+neckH}" rx="5" fill="${c.outfit}"/>
-    <!-- collar detail -->
-    <path d="M${cx-4},${collarY} L${cx},${collarY+8} L${cx+4},${collarY}" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.2"/>
-    <!-- left arm (back) -->
-    <line x1="${cx-13}" y1="${shoulderY}" x2="${cx-18}" y2="${handY}" stroke="${c.outfit}" stroke-width="9" stroke-linecap="round"/>
-    <!-- right arm (front) -->
-    <line x1="${cx+13}" y1="${shoulderY}" x2="${cx+17}" y2="${handY}" stroke="${c.outline}" stroke-width="9" stroke-linecap="round"/>
-    <!-- neck -->
-    <rect x="${cx-5}" y="${neckY}" width="10" height="${neckH+3}" fill="${c.skin}"/>
-    <!-- head -->
-    <ellipse cx="${cx}" cy="${headCY}" rx="${headR}" ry="${headR+1}" fill="${c.skin}" stroke="${c.outline}" stroke-width="1.2"/>
-    <!-- hair -->
-    <ellipse cx="${cx}" cy="${headCY - headR*0.55}" rx="${headR+1}" ry="${headR*0.65}" fill="${c.hair}"/>
-    <!-- eyes -->
-    <circle cx="${cx-5}" cy="${headCY+1}" r="2.2" fill="#fff"/>
-    <circle cx="${cx+5}" cy="${headCY+1}" r="2.2" fill="#fff"/>
-    <circle cx="${cx-4.5}" cy="${headCY+1.5}" r="1.4" fill="${c.outline}"/>
-    <circle cx="${cx+5.5}" cy="${headCY+1.5}" r="1.4" fill="${c.outline}"/>
-    <!-- eyebrows -->
-    <path d="M${cx-7},${headCY-4} Q${cx-4.5},${headCY-6} ${cx-2},${headCY-4}" fill="none" stroke="${c.hair}" stroke-width="1.2" stroke-linecap="round"/>
-    <path d="M${cx+2},${headCY-4} Q${cx+4.5},${headCY-6} ${cx+7},${headCY-4}" fill="none" stroke="${c.hair}" stroke-width="1.2" stroke-linecap="round"/>
-    <!-- mouth -->
-    <path d="M${cx-4},${headCY+8} Q${cx},${headCY+11} ${cx+4},${headCY+8}" fill="none" stroke="${c.outline}" stroke-width="1.3" stroke-linecap="round"/>
+  // glasses
+  const glassesSvg = c.glasses ? `
+    <circle cx="${cx-5}" cy="${headCY+1}" r="3.5" fill="none" stroke="#9ca3af" stroke-width="1.2"/>
+    <circle cx="${cx+5}" cy="${headCY+1}" r="3.5" fill="none" stroke="#9ca3af" stroke-width="1.2"/>
+    <line x1="${cx-1.5}" y1="${headCY+1}" x2="${cx+1.5}" y2="${headCY+1}" stroke="#9ca3af" stroke-width="0.9"/>
+    <line x1="${cx-8.5}" y1="${headCY+1}" x2="${cx-10}" y2="${headCY+1}" stroke="#9ca3af" stroke-width="0.9"/>
+    <line x1="${cx+8.5}" y1="${headCY+1}" x2="${cx+10}" y2="${headCY+1}" stroke="#9ca3af" stroke-width="0.9"/>` : '';
+
+  // held item
+  let itemSvg = '';
+  if (holdItem === 'flask') {
+    itemSvg = `<g class="ifloat" transform="translate(${cx+17},${handY-20})"><rect x="-7" y="0" width="14" height="18" rx="2" fill="#a78bfa" stroke="#7c3aed" stroke-width="1.5"/><rect x="-5" y="18" width="10" height="7" rx="1" fill="#7c3aed" opacity="0.6"/><rect x="-3" y="-4" width="6" height="5" rx="1" fill="#8b5cf6"/><circle cx="0" cy="9" r="3.5" fill="rgba(255,255,255,0.3)"/></g>`;
+  } else if (holdItem === 'clipboard') {
+    itemSvg = `<g class="ifloat" transform="translate(${cx+17},${handY-16})"><rect x="-10" y="-12" width="20" height="24" rx="2" fill="#374151" stroke="#4b5563" stroke-width="1"/><rect x="-7" y="-9" width="14" height="2" rx="1" fill="rgba(255,255,255,0.3)"/><rect x="-7" y="-5" width="10" height="2" rx="1" fill="rgba(255,255,255,0.2)"/><rect x="-7" y="-1" width="12" height="2" rx="1" fill="rgba(255,255,255,0.2)"/><rect x="-4" y="-15" width="8" height="4" rx="1" fill="#6b7280"/></g>`;
+  } else if (holdItem === 'muffin') {
+    itemSvg = `<g class="ifloat" transform="translate(${cx+17},${handY-14})"><ellipse cx="0" cy="0" rx="10" ry="12" fill="#92400e"/><ellipse cx="0" cy="-3" rx="12" ry="7" fill="#fbbf24" opacity="0.9"/><circle cx="-3" cy="-4" r="1.5" fill="#be185d"/><circle cx="3" cy="-6" r="1.5" fill="#7c3aed"/></g>`;
+  } else if (holdItem === 'book') {
+    itemSvg = `<g class="ifloat" transform="translate(${cx+17},${handY-14})"><rect x="-11" y="-10" width="22" height="20" rx="2" fill="#065f46" stroke="#064e3b" stroke-width="1.3"/><line x1="-11" y1="0" x2="11" y2="0" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/><rect x="-4" y="-7" width="8" height="14" rx="1" fill="rgba(255,255,255,0.12)"/></g>`;
+  }
+
+  const outlineColor = '#1a0d2e';
+  return `<g class="${animCls}" transform="${flip}">
+  <g class="idle">
+    <ellipse cx="${cx}" cy="${gy+2}" rx="16" ry="3.5" fill="rgba(0,0,0,0.22)"/>
+    <rect x="${cx-9}" y="${hipY}" width="8" height="${legH+footH}" rx="4" fill="${c.outfit}"/>
+    <rect x="${cx+1}" y="${hipY}" width="8" height="${legH+footH}" rx="4" fill="${c.outfit}"/>
+    <ellipse cx="${cx-5}" cy="${gy}" rx="7" ry="${footH/2}" fill="${outlineColor}"/>
+    <ellipse cx="${cx+5}" cy="${gy}" rx="7" ry="${footH/2}" fill="${outlineColor}"/>
+    <rect x="${cx-12}" y="${torsoY}" width="24" height="${torsoH+neckH}" rx="5" fill="${c.outfit}"/>
+    <path d="M${cx-3},${torsoY+7} L${cx},${torsoY+14} L${cx+3},${torsoY+7}" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1.1"/>
+    <line x1="${cx-12}" y1="${shoulderY}" x2="${cx-17}" y2="${handY}" stroke="${c.outfit}" stroke-width="8" stroke-linecap="round"/>
+    <line x1="${cx+12}" y1="${shoulderY}" x2="${cx+16}" y2="${handY}" stroke="${outlineColor}" stroke-width="8" stroke-linecap="round"/>
+    <rect x="${cx-4}" y="${neckY}" width="8" height="${neckH+2}" fill="${c.skin}"/>
+    <ellipse cx="${cx}" cy="${headCY}" rx="${headR}" ry="${headR+1}" fill="${c.skin}" stroke="${outlineColor}" stroke-width="1.1"/>
+    ${hairSvg}
+    <circle cx="${cx-5}" cy="${headCY+1}" r="2" fill="#fff"/>
+    <circle cx="${cx+5}" cy="${headCY+1}" r="2" fill="#fff"/>
+    <circle cx="${cx-4.5}" cy="${headCY+1.4}" r="1.2" fill="${outlineColor}"/>
+    <circle cx="${cx+5.5}" cy="${headCY+1.4}" r="1.2" fill="${outlineColor}"/>
+    <path d="M${cx-6},${headCY-4} Q${cx-4},${headCY-6} ${cx-2},${headCY-4}" fill="none" stroke="${c.hair}" stroke-width="1.1" stroke-linecap="round"/>
+    <path d="M${cx+2},${headCY-4} Q${cx+4},${headCY-6} ${cx+6},${headCY-4}" fill="none" stroke="${c.hair}" stroke-width="1.1" stroke-linecap="round"/>
+    <path d="M${cx-3.5},${headCY+7.5} Q${cx},${headCY+10} ${cx+3.5},${headCY+7.5}" fill="none" stroke="${outlineColor}" stroke-width="1.2" stroke-linecap="round"/>
+    ${glassesSvg}
   </g>
   ${itemSvg}
 </g>`;
 }
 
-// Mini portrait for dialogue box (just head + shoulders)
-function buildPortrait(key, color) {
-  const c = CHARS[key];
+function buildPortrait(cfg, bg) {
+  const c = cfg;
+  const cx=21, headCY=17, headR=10;
+  let hairSvg = '';
+  const hs = c.hairStyle;
+  if (hs==='straight-long'||hs==='straight-med') {
+    hairSvg=`<ellipse cx="${cx}" cy="${headCY-6}" rx="11" ry="7" fill="${c.hair}"/>
+    <rect x="${cx-9}" y="${headCY}" width="4" height="${hs==='straight-long'?16:9}" rx="2" fill="${c.hair}"/>
+    <rect x="${cx+5}" y="${headCY}" width="4" height="${hs==='straight-long'?16:9}" rx="2" fill="${c.hair}"/>`;
+  } else if (hs==='curly-long'||hs==='curly-short') {
+    hairSvg=`<ellipse cx="${cx}" cy="${headCY-6}" rx="13" ry="8" fill="${c.hair}"/>
+    <circle cx="${cx-9}" cy="${headCY+3}" r="4" fill="${c.hair}"/>
+    <circle cx="${cx+9}" cy="${headCY+3}" r="4" fill="${c.hair}"/>
+    ${hs==='curly-long'?`<circle cx="${cx-9}" cy="${headCY+11}" r="4" fill="${c.hair}"/><circle cx="${cx+9}" cy="${headCY+11}" r="4" fill="${c.hair}"/>`:''}`;
+  } else {
+    hairSvg=`<ellipse cx="${cx}" cy="${headCY-6}" rx="11" ry="6.5" fill="${c.hair}"/>`;
+  }
+  const glSvg = c.glasses ? `<circle cx="${cx-4}" cy="${headCY+1}" r="3" fill="none" stroke="#9ca3af" stroke-width="1"/><circle cx="${cx+4}" cy="${headCY+1}" r="3" fill="none" stroke="#9ca3af" stroke-width="1"/><line x1="${cx-1}" y1="${headCY+1}" x2="${cx+1}" y2="${headCY+1}" stroke="#9ca3af" stroke-width="0.8"/>` : '';
   return `<svg viewBox="0 0 42 42" xmlns="http://www.w3.org/2000/svg">
-    <rect width="42" height="42" fill="${color || '#1e1729'}"/>
-    <rect x="14" y="28" width="14" height="14" fill="${c.outfit}"/>
-    <rect x="17" y="24" width="8" height="7" fill="${c.skin}"/>
-    <ellipse cx="21" cy="18" rx="10" ry="11" fill="${c.skin}"/>
-    <ellipse cx="21" cy="10" rx="11" ry="7" fill="${c.hair}"/>
-    <circle cx="17" cy="19" r="1.8" fill="#fff"/>
-    <circle cx="25" cy="19" r="1.8" fill="#fff"/>
-    <circle cx="17.5" cy="19.5" r="1.1" fill="${c.outline}"/>
-    <circle cx="25.5" cy="19.5" r="1.1" fill="${c.outline}"/>
-    <path d="M17,25 Q21,28 25,25" fill="none" stroke="${c.outline}" stroke-width="1" stroke-linecap="round"/>
+    <rect width="42" height="42" fill="${bg||'#1e1729'}"/>
+    <rect x="12" y="26" width="18" height="16" fill="${c.outfit}"/>
+    <rect x="16" y="22" width="10" height="7" fill="${c.skin}"/>
+    <ellipse cx="${cx}" cy="${headCY}" rx="${headR}" ry="${headR+1}" fill="${c.skin}"/>
+    ${hairSvg}
+    <circle cx="${cx-4}" cy="${headCY+1}" r="1.6" fill="#fff"/>
+    <circle cx="${cx+4}" cy="${headCY+1}" r="1.6" fill="#fff"/>
+    <circle cx="${cx-3.5}" cy="${headCY+1.4}" r="1" fill="#1a0d2e"/>
+    <circle cx="${cx+4.5}" cy="${headCY+1.4}" r="1" fill="#1a0d2e"/>
+    <path d="M${cx-3},${headCY+8} Q${cx},${headCY+11} ${cx+3},${headCY+8}" fill="none" stroke="#1a0d2e" stroke-width="1" stroke-linecap="round"/>
+    ${glSvg}
   </svg>`;
 }
 
-// =====================================================================
-// BACKGROUND BUILDERS
-// =====================================================================
-function bgClassroom() {
-  return `
-  <!-- sky / wall -->
-  <rect width="800" height="260" fill="#1a1025"/>
-  <!-- floor -->
-  <rect x="0" y="200" width="800" height="60" fill="#100c1c"/>
-  <!-- floor line -->
-  <line x1="0" y1="200" x2="800" y2="200" stroke="rgba(192,132,252,0.15)" stroke-width="1"/>
-  <!-- chalkboard -->
-  <rect x="180" y="20" width="440" height="120" rx="4" fill="#0d3b27" stroke="rgba(52,211,153,0.3)" stroke-width="1.5"/>
-  <text x="400" y="60" text-anchor="middle" fill="rgba(255,255,255,0.55)" font-size="13" font-family="monospace">C₈H₁₁N  +  C₇H₈N₄O₂  →  💗</text>
-  <text x="400" y="82" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-size="11" font-family="monospace">Love Potion Synthesis</text>
-  <text x="400" y="110" text-anchor="middle" fill="rgba(52,211,153,0.5)" font-size="10" font-family="monospace">pH 7.4  ·  37°C  ·  ΔH = -82 kJ/mol</text>
-  <!-- desks -->
-  <rect x="50" y="180" width="120" height="12" rx="2" fill="#2a1f40" stroke="rgba(192,132,252,0.15)" stroke-width="1"/>
-  <rect x="220" y="180" width="120" height="12" rx="2" fill="#2a1f40" stroke="rgba(192,132,252,0.15)" stroke-width="1"/>
-  <rect x="600" y="180" width="120" height="12" rx="2" fill="#2a1f40" stroke="rgba(192,132,252,0.15)" stroke-width="1"/>
-  <!-- windows -->
-  <rect x="20" y="30" width="60" height="80" rx="3" fill="rgba(96,165,250,0.08)" stroke="rgba(96,165,250,0.2)" stroke-width="1"/>
-  <line x1="50" y1="30" x2="50" y2="110" stroke="rgba(96,165,250,0.15)" stroke-width="0.8"/>
-  <rect x="720" y="30" width="60" height="80" rx="3" fill="rgba(96,165,250,0.08)" stroke="rgba(96,165,250,0.2)" stroke-width="1"/>
-  <line x1="750" y1="30" x2="750" y2="110" stroke="rgba(96,165,250,0.15)" stroke-width="0.8"/>`;
-}
-
-function bgCloset() {
-  return `
-  <rect width="800" height="260" fill="#120d1e"/>
-  <rect x="0" y="200" width="800" height="60" fill="#0a0712"/>
-  <line x1="0" y1="200" x2="800" y2="200" stroke="rgba(192,132,252,0.1)" stroke-width="1"/>
-  <!-- shelves -->
-  <rect x="100" y="60" width="600" height="8" rx="2" fill="#2a1f40"/>
-  <rect x="100" y="130" width="600" height="8" rx="2" fill="#2a1f40"/>
-  <!-- shelf items -->
-  <rect x="120" y="30" width="14" height="30" rx="3" fill="#7c3aed" opacity="0.7"/>
-  <rect x="145" y="40" width="10" height="20" rx="2" fill="#be185d" opacity="0.6"/>
-  <rect x="165" y="35" width="16" height="25" rx="3" fill="#065f46" opacity="0.7"/>
-  <rect x="500" y="32" width="12" height="28" rx="2" fill="#1d4ed8" opacity="0.6"/>
-  <rect x="524" y="38" width="14" height="22" rx="2" fill="#92400e" opacity="0.6"/>
-  <!-- safety goggles -->
-  <ellipse cx="350" cy="47" rx="15" ry="8" fill="none" stroke="rgba(251,191,36,0.5)" stroke-width="2"/>
-  <ellipse cx="390" cy="47" rx="15" ry="8" fill="none" stroke="rgba(251,191,36,0.5)" stroke-width="2"/>
-  <line x1="365" y1="47" x2="375" y2="47" stroke="rgba(251,191,36,0.5)" stroke-width="2"/>
-  <!-- spotlight from above -->
-  <path d="M380,0 L320,200 L440,200 Z" fill="rgba(251,191,36,0.04)"/>
-  <circle cx="380" cy="5" r="8" fill="rgba(251,191,36,0.3)"/>
-  <!-- door frame -->
-  <rect x="0" y="0" width="6" height="260" fill="#1e1729"/>
-  <rect x="794" y="0" width="6" height="260" fill="#1e1729"/>`;
-}
-
-function bgHallway() {
-  return `
-  <rect width="800" height="260" fill="#0e0b1a"/>
-  <rect x="0" y="210" width="800" height="50" fill="#080612"/>
-  <rect x="0" y="0" width="800" height="18" fill="#080612"/>
-  <line x1="0" y1="210" x2="800" y2="210" stroke="rgba(192,132,252,0.12)" stroke-width="1"/>
-  <!-- perspective lines -->
-  <line x1="0" y1="18" x2="400" y2="80" stroke="rgba(192,132,252,0.08)" stroke-width="1"/>
-  <line x1="800" y1="18" x2="400" y2="80" stroke="rgba(192,132,252,0.08)" stroke-width="1"/>
-  <line x1="0" y1="210" x2="400" y2="140" stroke="rgba(192,132,252,0.08)" stroke-width="1"/>
-  <line x1="800" y1="210" x2="400" y2="140" stroke="rgba(192,132,252,0.08)" stroke-width="1"/>
-  <!-- lockers left -->
-  <rect x="0" y="18" width="50" height="192" fill="#16112a" stroke="rgba(192,132,252,0.1)" stroke-width="0.5"/>
-  <rect x="55" y="18" width="50" height="192" fill="#16112a" stroke="rgba(192,132,252,0.1)" stroke-width="0.5"/>
-  <!-- lockers right -->
-  <rect x="695" y="18" width="50" height="192" fill="#16112a" stroke="rgba(192,132,252,0.1)" stroke-width="0.5"/>
-  <rect x="750" y="18" width="50" height="192" fill="#16112a" stroke="rgba(192,132,252,0.1)" stroke-width="0.5"/>
-  <!-- ceiling lights -->
-  <rect x="160" y="0" width="80" height="6" rx="2" fill="rgba(251,191,36,0.25)"/>
-  <rect x="560" y="0" width="80" height="6" rx="2" fill="rgba(251,191,36,0.25)"/>
-  <ellipse cx="200" cy="3" rx="60" ry="20" fill="rgba(251,191,36,0.04)"/>
-  <ellipse cx="600" cy="3" rx="60" ry="20" fill="rgba(251,191,36,0.04)"/>`;
-}
-
-function bgGreenhouse() {
-  return `
-  <rect width="800" height="260" fill="#071a0e"/>
-  <rect x="0" y="210" width="800" height="50" fill="#040f07"/>
-  <line x1="0" y1="210" x2="800" y2="210" stroke="rgba(52,211,153,0.15)" stroke-width="1"/>
-  <!-- glass panes -->
-  <rect x="0" y="0" width="800" height="260" fill="rgba(52,211,153,0.02)"/>
-  <line x1="133" y1="0" x2="133" y2="260" stroke="rgba(52,211,153,0.08)" stroke-width="1"/>
-  <line x1="266" y1="0" x2="266" y2="260" stroke="rgba(52,211,153,0.08)" stroke-width="1"/>
-  <line x1="400" y1="0" x2="400" y2="260" stroke="rgba(52,211,153,0.08)" stroke-width="1"/>
-  <line x1="533" y1="0" x2="533" y2="260" stroke="rgba(52,211,153,0.08)" stroke-width="1"/>
-  <line x1="666" y1="0" x2="666" y2="260" stroke="rgba(52,211,153,0.08)" stroke-width="1"/>
-  <line x1="0" y1="80" x2="800" y2="80" stroke="rgba(52,211,153,0.06)" stroke-width="0.8"/>
-  <!-- potted plants decorative -->
-  <rect x="30" y="185" width="30" height="25" rx="3" fill="#1a3a20"/>
-  <ellipse cx="45" cy="180" rx="20" ry="15" fill="#15803d" opacity="0.8"/>
-  <ellipse cx="35" cy="175" rx="12" ry="10" fill="#16a34a" opacity="0.7"/>
-  <rect x="700" y="185" width="30" height="25" rx="3" fill="#1a3a20"/>
-  <ellipse cx="715" cy="180" rx="20" ry="15" fill="#15803d" opacity="0.8"/>
-  <!-- rose bush -->
-  <rect x="360" y="195" width="80" height="15" rx="2" fill="#1a3a20"/>
-  <ellipse cx="400" cy="190" rx="35" ry="18" fill="#166534" opacity="0.9"/>
-  <circle cx="385" cy="185" r="7" fill="#be185d" opacity="0.9"/>
-  <circle cx="407" cy="182" r="6" fill="#e11d48" opacity="0.8"/>
-  <circle cx="398" cy="192" r="5" fill="#be185d" opacity="0.7"/>
-  <!-- sun rays -->
-  <path d="M400,0 L350,100 L450,100Z" fill="rgba(251,191,36,0.03)"/>`;
-}
-
-function bgLibrary() {
-  return `
-  <rect width="800" height="260" fill="#100c07"/>
-  <rect x="0" y="210" width="800" height="50" fill="#080602"/>
-  <line x1="0" y1="210" x2="800" y2="210" stroke="rgba(251,191,36,0.1)" stroke-width="1"/>
-  <!-- bookshelf left -->
-  <rect x="0" y="0" width="160" height="260" fill="#160e04" stroke="rgba(251,191,36,0.1)" stroke-width="1"/>
-  <rect x="0" y="60" width="160" height="6" fill="#2a1a08"/>
-  <rect x="0" y="130" width="160" height="6" fill="#2a1a08"/>
-  <rect x="0" y="200" width="160" height="6" fill="#2a1a08"/>
-  <!-- book spines left -->
-  <rect x="10" y="15" width="18" height="44" rx="1" fill="#7c3aed"/>
-  <rect x="30" y="20" width="14" height="39" rx="1" fill="#be185d"/>
-  <rect x="46" y="12" width="20" height="47" rx="1" fill="#065f46"/>
-  <rect x="68" y="18" width="15" height="41" rx="1" fill="#1d4ed8"/>
-  <rect x="85" y="22" width="18" height="37" rx="1" fill="#92400e"/>
-  <rect x="105" y="15" width="16" height="44" rx="1" fill="#064e3b"/>
-  <rect x="123" y="20" width="14" height="39" rx="1" fill="#9d174d"/>
-  <rect x="10" y="75" width="22" height="48" rx="1" fill="#1e3a5f"/>
-  <rect x="34" y="78" width="16" height="45" rx="1" fill="#7c3aed"/>
-  <rect x="52" y="72" width="20" height="51" rx="1" fill="#065f46"/>
-  <!-- bookshelf right -->
-  <rect x="640" y="0" width="160" height="260" fill="#160e04" stroke="rgba(251,191,36,0.1)" stroke-width="1"/>
-  <rect x="640" y="60" width="160" height="6" fill="#2a1a08"/>
-  <rect x="640" y="130" width="160" height="6" fill="#2a1a08"/>
-  <rect x="650" y="15" width="18" height="44" rx="1" fill="#be185d"/>
-  <rect x="670" y="20" width="14" height="39" rx="1" fill="#065f46"/>
-  <rect x="686" y="15" width="20" height="44" rx="1" fill="#7c3aed"/>
-  <rect x="708" y="22" width="16" height="37" rx="1" fill="#1d4ed8"/>
-  <!-- table -->
-  <rect x="240" y="185" width="320" height="15" rx="3" fill="#2a1a08" stroke="rgba(251,191,36,0.15)" stroke-width="1"/>
-  <rect x="270" y="200" width="14" height="30" fill="#2a1a08"/>
-  <rect x="516" y="200" width="14" height="30" fill="#2a1a08"/>
-  <!-- lamp -->
-  <rect x="380" y="140" width="4" height="45" fill="#4b3a1a"/>
-  <path d="M360,140 L420,140 L400,120 L380,120 Z" fill="#92400e" opacity="0.8"/>
-  <ellipse cx="390" cy="140" rx="30" ry="10" fill="rgba(251,191,36,0.08)"/>`;
-}
-
-function bgLab() {
-  return `
-  <rect width="800" height="260" fill="#0d0d1a"/>
-  <rect x="0" y="195" width="800" height="65" fill="#08080f"/>
+// ============================================================
+// BACKGROUNDS
+// ============================================================
+function bgClassroom() { return `
+  <rect width="800" height="250" fill="#1a1025"/>
+  <rect x="0" y="195" width="800" height="55" fill="#100c1c"/>
   <line x1="0" y1="195" x2="800" y2="195" stroke="rgba(192,132,252,0.15)" stroke-width="1"/>
-  <!-- lab bench left -->
-  <rect x="0" y="175" width="280" height="20" rx="2" fill="#1a1030" stroke="rgba(192,132,252,0.2)" stroke-width="1"/>
-  <!-- lab bench right -->
-  <rect x="520" y="175" width="280" height="20" rx="2" fill="#1a1030" stroke="rgba(192,132,252,0.2)" stroke-width="1"/>
-  <!-- equipment left bench -->
-  <rect x="30" y="145" width="12" height="30" rx="3" fill="#7c3aed" opacity="0.8"/>
-  <path d="M25,145 L43,145 L38,120 L30,120 Z" fill="#a78bfa" opacity="0.7"/>
-  <rect x="70" y="148" width="10" height="27" rx="2" fill="#be185d" opacity="0.7"/>
-  <circle cx="130" cy="163" r="14" fill="none" stroke="rgba(192,132,252,0.4)" stroke-width="2"/>
-  <circle cx="130" cy="163" r="8" fill="rgba(192,132,252,0.15)"/>
-  <rect x="165" y="150" width="30" height="25" rx="2" fill="#1e3a5f" stroke="#3b82f6" stroke-width="1"/>
-  <!-- equipment right bench -->
-  <rect x="550" y="145" width="12" height="30" rx="3" fill="#f472b6" opacity="0.7"/>
-  <path d="M545,145 L563,145 L558,125 L550,125 Z" fill="#fbbf24" opacity="0.6"/>
-  <circle cx="620" cy="163" r="14" fill="none" stroke="rgba(244,114,182,0.4)" stroke-width="2"/>
-  <rect x="670" y="150" width="30" height="25" rx="2" fill="#1e3a5f" stroke="#3b82f6" stroke-width="1"/>
-  <!-- overhead light strips -->
-  <rect x="150" y="0" width="200" height="5" rx="2" fill="rgba(192,132,252,0.3)"/>
-  <rect x="450" y="0" width="200" height="5" rx="2" fill="rgba(192,132,252,0.3)"/>
-  <!-- glow from bench -->
-  <ellipse cx="140" cy="185" rx="80" ry="15" fill="rgba(192,132,252,0.05)"/>
-  <ellipse cx="660" cy="185" rx="80" ry="15" fill="rgba(244,114,182,0.05)"/>`;
+  <rect x="170" y="18" width="460" height="115" rx="4" fill="#0d3b27" stroke="rgba(52,211,153,0.3)" stroke-width="1.5"/>
+  <text x="400" y="55" text-anchor="middle" fill="rgba(255,255,255,0.55)" font-size="12" font-family="monospace">What is another name for adrenaline?</text>
+  <text x="400" y="78" text-anchor="middle" fill="rgba(52,211,153,0.7)" font-size="14" font-family="monospace" font-weight="bold">Epinephrine</text>
+  <text x="400" y="105" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-size="10" font-family="monospace">Fight or Flight Response</text>
+  <rect x="50" y="175" width="130" height="12" rx="2" fill="#2a1f40" stroke="rgba(192,132,252,0.15)" stroke-width="1"/>
+  <rect x="220" y="175" width="130" height="12" rx="2" fill="#2a1f40" stroke="rgba(192,132,252,0.15)" stroke-width="1"/>
+  <rect x="600" y="175" width="130" height="12" rx="2" fill="#2a1f40" stroke="rgba(192,132,252,0.15)" stroke-width="1"/>
+  <rect x="18" y="28" width="60" height="80" rx="3" fill="rgba(96,165,250,0.07)" stroke="rgba(96,165,250,0.18)" stroke-width="1"/>
+  <line x1="48" y1="28" x2="48" y2="108" stroke="rgba(96,165,250,0.12)" stroke-width="0.8"/>
+  <rect x="722" y="28" width="60" height="80" rx="3" fill="rgba(96,165,250,0.07)" stroke="rgba(96,165,250,0.18)" stroke-width="1"/>
+  <line x1="752" y1="28" x2="752" y2="108" stroke="rgba(96,165,250,0.12)" stroke-width="0.8"/>`;
+}
+function bgLab() { return `
+  <rect width="800" height="250" fill="#0d0d1a"/>
+  <rect x="0" y="190" width="800" height="60" fill="#08080f"/>
+  <line x1="0" y1="190" x2="800" y2="190" stroke="rgba(192,132,252,0.15)" stroke-width="1"/>
+  <rect x="0" y="168" width="270" height="20" rx="2" fill="#1a1030" stroke="rgba(192,132,252,0.2)" stroke-width="1"/>
+  <rect x="530" y="168" width="270" height="20" rx="2" fill="#1a1030" stroke="rgba(192,132,252,0.2)" stroke-width="1"/>
+  <rect x="28" y="138" width="12" height="30" rx="3" fill="#7c3aed" opacity="0.8"/>
+  <path d="M23,138 L41,138 L37,115 L27,115 Z" fill="#a78bfa" opacity="0.7"/>
+  <rect x="68" y="142" width="10" height="26" rx="2" fill="#be185d" opacity="0.7"/>
+  <circle cx="128" cy="157" r="13" fill="none" stroke="rgba(192,132,252,0.4)" stroke-width="2"/>
+  <circle cx="128" cy="157" r="7" fill="rgba(192,132,252,0.15)"/>
+  <rect x="558" y="138" width="12" height="30" rx="3" fill="#f472b6" opacity="0.7"/>
+  <path d="M553,138 L571,138 L567,120 L557,120 Z" fill="#fbbf24" opacity="0.6"/>
+  <circle cx="628" cy="157" r="13" fill="none" stroke="rgba(244,114,182,0.4)" stroke-width="2"/>
+  <rect x="148" y="0" width="200" height="5" rx="2" fill="rgba(192,132,252,0.28)"/>
+  <rect x="452" y="0" width="200" height="5" rx="2" fill="rgba(192,132,252,0.28)"/>`;
+}
+function bgGreenhouse() { return `
+  <rect width="800" height="250" fill="#071a0e"/>
+  <rect x="0" y="205" width="800" height="45" fill="#040f07"/>
+  <line x1="0" y1="205" x2="800" y2="205" stroke="rgba(52,211,153,0.15)" stroke-width="1"/>
+  <line x1="133" y1="0" x2="133" y2="250" stroke="rgba(52,211,153,0.08)" stroke-width="1"/>
+  <line x1="266" y1="0" x2="266" y2="250" stroke="rgba(52,211,153,0.08)" stroke-width="1"/>
+  <line x1="400" y1="0" x2="400" y2="250" stroke="rgba(52,211,153,0.08)" stroke-width="1"/>
+  <line x1="533" y1="0" x2="533" y2="250" stroke="rgba(52,211,153,0.08)" stroke-width="1"/>
+  <line x1="666" y1="0" x2="666" y2="250" stroke="rgba(52,211,153,0.08)" stroke-width="1"/>
+  <line x1="0" y1="80" x2="800" y2="80" stroke="rgba(52,211,153,0.05)" stroke-width="0.8"/>
+  <rect x="28" y="180" width="28" height="25" rx="3" fill="#1a3a20"/>
+  <ellipse cx="42" cy="175" rx="18" ry="14" fill="#15803d" opacity="0.8"/>
+  <ellipse cx="33" cy="170" rx="11" ry="9" fill="#16a34a" opacity="0.7"/>
+  <rect x="700" y="180" width="28" height="25" rx="3" fill="#1a3a20"/>
+  <ellipse cx="714" cy="175" rx="18" ry="14" fill="#15803d" opacity="0.8"/>
+  <rect x="358" y="190" width="84" height="15" rx="2" fill="#1a3a20"/>
+  <ellipse cx="400" cy="184" rx="34" ry="17" fill="#166534" opacity="0.9"/>
+  <circle cx="384" cy="178" r="7" fill="#be185d" opacity="0.9"/>
+  <circle cx="406" cy="176" r="6" fill="#e11d48" opacity="0.8"/>
+  <circle cx="397" cy="186" r="5" fill="#be185d" opacity="0.7"/>`;
+}
+function bgStudentCenter() { return `
+  <rect width="800" height="250" fill="#12100a"/>
+  <rect x="0" y="200" width="800" height="50" fill="#0a0804"/>
+  <line x1="0" y1="200" x2="800" y2="200" stroke="rgba(251,191,36,0.12)" stroke-width="1"/>
+  <rect x="60" y="60" width="200" height="140" rx="4" fill="#1a1408" stroke="rgba(251,191,36,0.12)" stroke-width="1"/>
+  <rect x="80" y="80" width="160" height="100" rx="2" fill="#241c08" stroke="rgba(251,191,36,0.08)" stroke-width="0.5"/>
+  <text x="160" y="135" text-anchor="middle" fill="rgba(251,191,36,0.3)" font-size="28">🍽</text>
+  <text x="160" y="110" text-anchor="middle" fill="rgba(251,191,36,0.2)" font-size="12">CAFETERIA</text>
+  <rect x="340" y="140" width="240" height="60" rx="4" fill="#1a1408" stroke="rgba(251,191,36,0.12)" stroke-width="1"/>
+  <rect x="360" y="90" width="100" height="50" rx="3" fill="#1a1408" stroke="rgba(251,191,36,0.1)" stroke-width="1"/>
+  <text x="410" y="122" text-anchor="middle" fill="rgba(251,191,36,0.25)" font-size="24">🪑</text>
+  <rect x="540" y="90" width="100" height="50" rx="3" fill="#1a1408" stroke="rgba(251,191,36,0.1)" stroke-width="1"/>
+  <rect x="150" y="0" width="100" height="5" rx="2" fill="rgba(251,191,36,0.2)"/>
+  <rect x="550" y="0" width="100" height="5" rx="2" fill="rgba(251,191,36,0.2)"/>`;
+}
+function bgOffice() { return `
+  <rect width="800" height="250" fill="#0e0b18"/>
+  <rect x="0" y="200" width="800" height="50" fill="#080610"/>
+  <line x1="0" y1="200" x2="800" y2="200" stroke="rgba(192,132,252,0.1)" stroke-width="1"/>
+  <rect x="250" y="30" width="300" height="170" rx="4" fill="#140f22" stroke="rgba(192,132,252,0.2)" stroke-width="1"/>
+  <rect x="280" y="60" width="240" height="140" rx="3" fill="#0d0a1a" stroke="rgba(192,132,252,0.1)" stroke-width="0.5"/>
+  <rect x="290" y="140" width="220" height="60" rx="2" fill="#130e20" stroke="rgba(192,132,252,0.15)" stroke-width="1"/>
+  <rect x="340" y="80" width="120" height="80" rx="4" fill="#1a1535" stroke="rgba(96,165,250,0.3)" stroke-width="1"/>
+  <rect x="345" y="85" width="110" height="70" rx="2" fill="#0f172a"/>
+  <text x="400" y="122" text-anchor="middle" fill="rgba(96,165,250,0.5)" font-size="10" font-family="monospace">testosterone + estrogen</text>
+  <text x="400" y="138" text-anchor="middle" fill="rgba(96,165,250,0.35)" font-size="9" font-family="monospace">initial attraction</text>
+  <rect x="50" y="50" width="80" height="120" rx="3" fill="#140f22" stroke="rgba(192,132,252,0.1)" stroke-width="1"/>
+  <text x="90" y="118" text-anchor="middle" fill="rgba(192,132,252,0.3)" font-size="30">📚</text>
+  <rect x="670" y="50" width="80" height="120" rx="3" fill="#140f22" stroke="rgba(192,132,252,0.1)" stroke-width="1"/>
+  <text x="710" y="118" text-anchor="middle" fill="rgba(192,132,252,0.3)" font-size="30">🏆</text>`;
+}
+function bgCafeteria() { return `
+  <rect width="800" height="250" fill="#12100a"/>
+  <rect x="0" y="200" width="800" height="50" fill="#0a0804"/>
+  <line x1="0" y1="200" x2="800" y2="200" stroke="rgba(251,191,36,0.12)" stroke-width="1"/>
+  <rect x="100" y="150" width="600" height="50" rx="3" fill="#1a1408" stroke="rgba(251,191,36,0.15)" stroke-width="1"/>
+  <rect x="200" y="80" width="400" height="70" rx="3" fill="#241c08" stroke="rgba(251,191,36,0.1)" stroke-width="0.8"/>
+  <text x="400" y="123" text-anchor="middle" fill="rgba(251,191,36,0.35)" font-size="18">🧁 MUFFINS · SNACKS · DRINKS 🧁</text>
+  <rect x="120" y="165" width="60" height="25" rx="2" fill="#1f1600"/>
+  <rect x="200" y="165" width="60" height="25" rx="2" fill="#1f1600"/>
+  <rect x="280" y="165" width="60" height="25" rx="2" fill="#1f1600"/>
+  <rect x="360" y="165" width="60" height="25" rx="2" fill="#1f1600"/>
+  <rect x="440" y="165" width="60" height="25" rx="2" fill="#1f1600"/>
+  <rect x="150" y="0" width="120" height="5" rx="2" fill="rgba(251,191,36,0.18)"/>
+  <rect x="530" y="0" width="120" height="5" rx="2" fill="rgba(251,191,36,0.18)"/>`;
+}
+function bgBathroom() { return `
+  <rect width="800" height="250" fill="#0a1015"/>
+  <rect x="0" y="205" width="800" height="45" fill="#060c10"/>
+  <line x1="0" y1="205" x2="800" y2="205" stroke="rgba(96,165,250,0.1)" stroke-width="1"/>
+  <rect x="80" y="30" width="80" height="100" rx="2" fill="#0d1a25" stroke="rgba(96,165,250,0.2)" stroke-width="1"/>
+  <rect x="190" y="30" width="80" height="100" rx="2" fill="#0d1a25" stroke="rgba(96,165,250,0.2)" stroke-width="1"/>
+  <rect x="82" y="32" width="76" height="96" rx="1" fill="rgba(96,165,250,0.05)"/>
+  <rect x="192" y="32" width="76" height="96" rx="1" fill="rgba(96,165,250,0.05)"/>
+  <rect x="500" y="80" width="220" height="120" rx="3" fill="#0d1a25" stroke="rgba(96,165,250,0.15)" stroke-width="1"/>
+  <rect x="510" y="90" width="200" height="100" rx="2" fill="#071015"/>
+  <rect x="0" y="200" width="800" height="8" fill="#0d1a25"/>
+  <rect x="0" y="195" width="800" height="5" fill="rgba(96,165,250,0.05)"/>`;
+}
+function bgClassroom2() { return `
+  <rect width="800" height="250" fill="#1a1025"/>
+  <rect x="0" y="195" width="800" height="55" fill="#100c1c"/>
+  <line x1="0" y1="195" x2="800" y2="195" stroke="rgba(192,132,252,0.15)" stroke-width="1"/>
+  <rect x="160" y="18" width="480" height="115" rx="4" fill="#0d3b27" stroke="rgba(52,211,153,0.3)" stroke-width="1.5"/>
+  <text x="400" y="55" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="11" font-family="monospace">Attachment: The Long-Term Bond</text>
+  <text x="400" y="78" text-anchor="middle" fill="rgba(52,211,153,0.6)" font-size="11" font-family="monospace">Oxytocin + Vasopressin</text>
+  <text x="400" y="100" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-size="10" font-family="monospace">Trust · Protection · Long-term Security</text>
+  <rect x="50" y="175" width="130" height="12" rx="2" fill="#2a1f40"/>
+  <rect x="230" y="175" width="130" height="12" rx="2" fill="#2a1f40"/>
+  <rect x="590" y="175" width="130" height="12" rx="2" fill="#2a1f40"/>
+  <rect x="18" y="28" width="60" height="80" rx="3" fill="rgba(96,165,250,0.07)" stroke="rgba(96,165,250,0.15)" stroke-width="1"/>
+  <line x1="48" y1="28" x2="48" y2="108" stroke="rgba(96,165,250,0.1)" stroke-width="0.8"/>
+  <rect x="722" y="28" width="60" height="80" rx="3" fill="rgba(96,165,250,0.07)" stroke="rgba(96,165,250,0.15)" stroke-width="1"/>`;
+}
+function bgCourtyard() { return `
+  <rect width="800" height="250" fill="#0d1508"/>
+  <rect x="0" y="195" width="800" height="55" fill="#060d04"/>
+  <line x1="0" y1="195" x2="800" y2="195" stroke="rgba(52,211,153,0.12)" stroke-width="1"/>
+  <rect x="0" y="195" width="800" height="55" fill="rgba(52,211,153,0.04)"/>
+  <circle cx="150" cy="120" r="45" fill="#0f2a0a" stroke="rgba(52,211,153,0.12)" stroke-width="1"/>
+  <circle cx="650" cy="120" r="45" fill="#0f2a0a" stroke="rgba(52,211,153,0.12)" stroke-width="1"/>
+  <rect x="300" y="100" width="200" height="8" rx="4" fill="#1a2e10"/>
+  <rect x="300" y="115" width="200" height="8" rx="4" fill="#1a2e10"/>
+  <rect x="300" y="130" width="200" height="8" rx="4" fill="#1a2e10"/>
+  <circle cx="400" cy="60" r="30" fill="#0f2a0a" stroke="rgba(52,211,153,0.1)" stroke-width="1"/>
+  <text x="150" y="128" text-anchor="middle" fill="rgba(52,211,153,0.25)" font-size="30">🌳</text>
+  <text x="650" y="128" text-anchor="middle" fill="rgba(52,211,153,0.25)" font-size="30">🌳</text>
+  <text x="400" y="68" text-anchor="middle" fill="rgba(52,211,153,0.25)" font-size="22">🌿</text>
+  <rect x="0" y="0" width="800" height="18" fill="#060d04"/>
+  <rect x="180" y="0" width="440" height="18" fill="#0d1508"/>`;
+}
+function bgField() { return `
+  <rect width="800" height="250" fill="#0a1506"/>
+  <rect x="0" y="170" width="800" height="80" fill="#061004"/>
+  <line x1="0" y1="170" x2="800" y2="170" stroke="rgba(52,211,153,0.1)" stroke-width="1"/>
+  <rect x="0" y="170" width="800" height="80" fill="rgba(52,211,153,0.03)"/>
+  <ellipse cx="400" cy="170" rx="300" ry="20" fill="rgba(52,211,153,0.05)"/>
+  <line x1="100" y1="170" x2="100" y2="120" stroke="rgba(255,255,255,0.05)" stroke-width="0.8"/>
+  <line x1="250" y1="170" x2="250" y2="120" stroke="rgba(255,255,255,0.05)" stroke-width="0.8"/>
+  <line x1="400" y1="170" x2="400" y2="120" stroke="rgba(255,255,255,0.05)" stroke-width="0.8"/>
+  <line x1="550" y1="170" x2="550" y2="120" stroke="rgba(255,255,255,0.05)" stroke-width="0.8"/>
+  <line x1="700" y1="170" x2="700" y2="120" stroke="rgba(255,255,255,0.05)" stroke-width="0.8"/>
+  <rect x="0" y="0" width="800" height="120" fill="#050e03"/>
+  <rect x="0" y="0" width="800" height="25" fill="#030a02"/>
+  <circle cx="200" cy="40" r="3" fill="rgba(255,255,255,0.35)"/>
+  <circle cx="350" cy="20" r="2" fill="rgba(255,255,255,0.3)"/>
+  <circle cx="500" cy="55" r="2.5" fill="rgba(255,255,255,0.4)"/>
+  <circle cx="650" cy="30" r="2" fill="rgba(255,255,255,0.3)"/>`;
 }
 
-function bgNurse() {
-  return `
-  <rect width="800" height="260" fill="#0d1520"/>
-  <rect x="0" y="205" width="800" height="55" fill="#060f18"/>
-  <line x1="0" y1="205" x2="800" y2="205" stroke="rgba(96,165,250,0.12)" stroke-width="1"/>
-  <!-- desk -->
-  <rect x="500" y="180" width="280" height="18" rx="2" fill="#0f2235" stroke="rgba(96,165,250,0.2)" stroke-width="1"/>
-  <rect x="520" y="198" width="12" height="30" fill="#0f2235"/>
-  <rect x="750" y="198" width="12" height="30" fill="#0f2235"/>
-  <!-- desk items -->
-  <rect x="520" y="148" width="20" height="32" rx="2" fill="#1e3a8a" opacity="0.8"/>
-  <rect x="555" y="155" width="14" height="25" rx="2" fill="#065f46" opacity="0.7"/>
-  <!-- red cross sign -->
-  <rect x="360" y="20" width="80" height="80" rx="4" fill="#0f2235" stroke="rgba(96,165,250,0.2)" stroke-width="1"/>
-  <rect x="386" y="30" width="28" height="60" rx="2" fill="#be123c" opacity="0.8"/>
-  <rect x="370" y="46" width="60" height="28" rx="2" fill="#be123c" opacity="0.8"/>
-  <!-- examination bed -->
-  <rect x="50" y="175" width="200" height="20" rx="4" fill="#0f2235" stroke="rgba(96,165,250,0.2)" stroke-width="1"/>
-  <rect x="50" y="185" width="200" height="10" rx="2" fill="rgba(255,255,255,0.06)"/>
-  <!-- windows -->
-  <rect x="20" y="30" width="70" height="100" rx="3" fill="rgba(96,165,250,0.06)" stroke="rgba(96,165,250,0.15)" stroke-width="1"/>
-  <line x1="55" y1="30" x2="55" y2="130" stroke="rgba(96,165,250,0.12)" stroke-width="0.8"/>
-  <line x1="20" y1="80" x2="90" y2="80" stroke="rgba(96,165,250,0.12)" stroke-width="0.8"/>`;
-}
-
-const BKGS = { classroom:bgClassroom, closet:bgCloset, hallway:bgHallway, greenhouse:bgGreenhouse, library:bgLibrary, lab:bgLab, nurse:bgNurse };
-
-// =====================================================================
-// SCENE CHARACTER CONFIGS
-// Which characters appear, where, and what they hold
-// =====================================================================
-const SCENE_CHARS = {
-  0: [ // classroom — vela lectures, player stands at desk
-    { key:'vela',  cx:150, ground:200, facing:'right', hold:null,      cls:'char-left' },
-    { key:'player',cx:600, ground:200, facing:'left',  hold:null,      cls:'char-right' },
-  ],
-  1: [ // closet — player finds item
-    { key:'player',cx:380, ground:200, facing:'right', hold:'flask',   cls:'char-center' },
-  ],
-  2: [ // skip closet hallway — just player walking
-    { key:'player',cx:400, ground:210, facing:'right', hold:null,      cls:'char-center' },
-  ],
-  3: [ // hallway — player + ms park talking
-    { key:'park',  cx:230, ground:210, facing:'right', hold:'vial',    cls:'char-left' },
-    { key:'player',cx:570, ground:210, facing:'left',  hold:null,      cls:'char-right' },
-  ],
-  4: [ // greenhouse entrance — player frustrated
-    { key:'player',cx:400, ground:210, facing:'right', hold:null,      cls:'char-center' },
-  ],
-  5: [ // greenhouse success — player holds two items
-    { key:'player',cx:400, ground:210, facing:'right', hold:'vial',    cls:'char-center' },
-  ],
-  6: [ // library — librarian chen + player
-    { key:'chen',  cx:220, ground:205, facing:'right', hold:'book',    cls:'char-left' },
-    { key:'player',cx:570, ground:205, facing:'left',  hold:null,      cls:'char-right' },
-  ],
-  7: [ // greenhouse partial
-    { key:'player',cx:400, ground:210, facing:'right', hold:'vial',    cls:'char-center' },
-  ],
-  8: [ // lab mixing — player working
-    { key:'player',cx:400, ground:195, facing:'right', hold:'flask',   cls:'char-center' },
-  ],
-  9: [ // nurse's office — nurse rivera + player
-    { key:'rivera',cx:580, ground:205, facing:'left',  hold:'stethoscope', cls:'char-right' },
-    { key:'player',cx:230, ground:205, facing:'right', hold:null,      cls:'char-left' },
-  ],
-  10: [ // incomplete end — dr vela + sad player
-    { key:'vela',  cx:200, ground:195, facing:'right', hold:null,      cls:'char-left' },
-    { key:'player',cx:580, ground:195, facing:'left',  hold:null,      cls:'char-right' },
-  ],
-  11: [ // complete end — everyone celebrating
-    { key:'vela',  cx:140, ground:195, facing:'right', hold:null,      cls:'char-left' },
-    { key:'player',cx:400, ground:195, facing:'right', hold:'flask',   cls:'char-center' },
-    { key:'park',  cx:660, ground:195, facing:'left',  hold:'vial',    cls:'char-right' },
-  ],
+const BKGS = {
+  classroom:bgClassroom, lab:bgLab, greenhouse:bgGreenhouse,
+  student_center:bgStudentCenter, office:bgOffice, cafeteria:bgCafeteria,
+  bathroom:bgBathroom, classroom2:bgClassroom2, courtyard:bgCourtyard, field:bgField
 };
 
-// Speaker -> character key mapping
-const SPEAKER_CHAR = {
-  'Dr. Vela':'vela', 'Narrator':'player', 'Ms. Park':'park',
-  'Librarian Chen':'chen', 'Nurse Rivera':'rivera', 'You':'player'
+// ============================================================
+// SCENE CHARACTERS (NPC definitions per scene; player always auto-added)
+// ============================================================
+const SCENE_NPCS = {
+  // id: array of {key, cx, ground, facing, hold, cls}
+  0:  [{key:'vogel',   cx:180, ground:195, facing:'right', hold:'clipboard', cls:'cl'}],
+  1:  [{key:'vogel',   cx:180, ground:195, facing:'right', hold:'clipboard', cls:'cl'}],
+  2:  [{key:'karolina',cx:180, ground:190, facing:'right', hold:'clipboard', cls:'cl'}],
+  3:  [{key:'mayo',    cx:180, ground:205, facing:'right', hold:null,        cls:'cl'}],
+  4:  [{key:'rachel',  cx:180, ground:200, facing:'right', hold:'book',      cls:'cl'}],
+  5:  [], // just player on computer
+  6:  [{key:'vogel',   cx:620, ground:200, facing:'left',  hold:'clipboard', cls:'cr'}],
+  7:  [{key:'rachel',  cx:180, ground:200, facing:'right', hold:null,        cls:'cl'}],
+  8:  [{key:'mayo',    cx:180, ground:205, facing:'right', hold:null,        cls:'cl'}],
+  9:  [{key:'karolina',cx:620, ground:195, facing:'left',  hold:null,        cls:'cr'}],
+  10: [{key:'vogel',   cx:620, ground:195, facing:'left',  hold:null,        cls:'cr'}],
+  11: [{key:'rachel',  cx:620, ground:200, facing:'left',  hold:null,        cls:'cr'},{key:'karolina',cx:400,ground:200,facing:'right',hold:null,cls:'cc'}],
+  12: [], // player alone in courtyard
+  13: [{key:'vogel',   cx:180, ground:170, facing:'right', hold:null,        cls:'cl'}],
+  14: [], // end
 };
 
-// =====================================================================
-// SCENE DATA
-// =====================================================================
+// player position per scene
+const PLAYER_POS = {
+  0: {cx:620,ground:195,facing:'left',hold:null,cls:'cr'},
+  1: {cx:620,ground:195,facing:'left',hold:null,cls:'cr'},
+  2: {cx:620,ground:190,facing:'left',hold:null,cls:'cr'},
+  3: {cx:620,ground:205,facing:'left',hold:null,cls:'cr'},
+  4: {cx:620,ground:200,facing:'left',hold:null,cls:'cr'},
+  5: {cx:400,ground:200,facing:'right',hold:null,cls:'cc'},
+  6: {cx:300,ground:200,facing:'right',hold:null,cls:'cl'},
+  7: {cx:620,ground:200,facing:'left',hold:null,cls:'cr'},
+  8: {cx:620,ground:205,facing:'left',hold:null,cls:'cr'},
+  9: {cx:300,ground:195,facing:'right',hold:null,cls:'cl'},
+  10:{cx:300,ground:195,facing:'right',hold:null,cls:'cl'},
+  11:{cx:180,ground:200,facing:'right',hold:'muffin',cls:'cl'},
+  12:{cx:400,ground:195,facing:'right',hold:null,cls:'cc'},
+  13:{cx:620,ground:170,facing:'left',hold:null,cls:'cr'},
+  14:{cx:400,ground:200,facing:'right',hold:null,cls:'cc'},
+};
+
+// NPC speaker key lookup
+const SPEAKER_NPC = {
+  'Mrs. Vogel':'vogel','Mr. Mayo':'mayo','Rachel':'rachel','Karolina':'karolina'
+};
+const NPC_BG = {vogel:'#1e1232',mayo:'#1a1a1a',rachel:'#2d0a1a',karolina:'#0c1f35'};
+
+// ============================================================
+// SCENES
+// ============================================================
+const TOTAL_SCENES = 14;
 const SCENES = [
+  // 0 — OPENING
   {
-    id:0, chapter:"Chapter 1: The Assignment", location:"Chemistry Classroom", bg:"classroom",
-    speaker:"Dr. Vela",
-    dialogue:"Welcome, students. Today's challenge is unlike any other. Somewhere in this school are five ingredients for a real Love Potion — compounds that stimulate oxytocin, phenylethylamine, and serotonin. Your choices determine if you find them all.",
-    chemFact:{ icon:"🧪", label:"Chem Concept", text:"A <strong>Love Potion</strong> is rooted in real chemistry. The brain releases <strong>phenylethylamine (PEA)</strong>, <strong>dopamine</strong>, <strong>oxytocin</strong>, and <strong>serotonin</strong> during attraction — organic molecules with precise structures." },
+    id:0, chapter:"Chapter 1: The Question", location:"Chemistry Classroom", bg:"classroom",
+    speaker:"Mrs. Vogel",
+    dialogue:"Welcome! What makes people fall in love? Let's find out! First question: What is another name for adrenaline? Go into the classroom or go straight to the lab and find out.",
+    chemFact:{icon:"⚡",label:"The Hunt Begins",text:"<strong>Adrenaline</strong> is a hormone and neurotransmitter that plays a huge role in how we experience excitement and attraction. But what's its scientific name?"},
     choices:[
-      { icon:"🚪", text:"Head to the science supply closet", label:"Maybe there's something useful inside", next:1 },
-      { icon:"🤷", text:"Skip the closet — go straight to the lab", label:"Shortcuts might cost you an ingredient", next:2 }
+      {icon:"🏫",text:"Stay in the classroom to find the answer",sub:"Ask Mrs. Vogel right here",next:1},
+      {icon:"🔬",text:"Go straight to the lab",sub:"Maybe Karolina knows",next:2}
     ]
   },
+  // 1 — CLASSROOM ANSWER
   {
-    id:1, chapter:"Chapter 1: The Assignment", location:"Supply Closet", bg:"closet",
-    speaker:"Narrator",
-    dialogue:"You open the door. Inside, half-hidden behind safety goggles, is a vial of dark chocolate extract. A sticky note reads: 'Theobromine — triggers mild euphoria. Handle with care.' You pocket the vial.",
-    outcome:{ type:"good", text:"✓ You collected Theobromine extract!" }, item:"🍫 Theobromine Extract",
-    chemFact:{ icon:"🍫", label:"Ingredient #1 Found", text:"<strong>Theobromine</strong> (C₇H₈N₄O₂) is a xanthine alkaloid in cacao. It inhibits adenosine receptors, causing mild stimulation and mood elevation — a methylxanthine structurally similar to caffeine." },
+    id:1, chapter:"Chapter 1: The Question", location:"Chemistry Classroom", bg:"classroom",
+    speaker:"Mrs. Vogel",
+    dialogue:"Great choice staying! The answer is: Epinephrine. That is the scientific name for adrenaline. Now, what does adrenaline actually do? It is the primary neurotransmitter and hormone that drives the body's fight or flight response. Adrenaline signals your heart to pump faster, forcing more oxygen rich blood to your brain and major muscle groups. Now head into the greenhouse room!",
+    answer:{label:"Answer: What is another name for adrenaline?", text:"Epinephrine"},
+    chemFact:{icon:"🧠",label:"What Adrenaline Does",text:"<strong>Adrenaline (Epinephrine)</strong> is the primary neurotransmitter and hormone that drives the body's fight or flight response. It signals your heart to pump faster, forcing more oxygen rich blood to your brain and major muscle groups."},
+    outcome:{type:"good",text:"✓ Learned: Adrenaline = Epinephrine"},
+    item:"⚡ Epinephrine Fact",
+    choices:[{icon:"🌿",text:"Head into the greenhouse room",sub:"Find Mr. Mayo",next:3}]
+  },
+  {
+    id:2, chapter:"Chapter 1: The Question", location:"Chemistry Lab", bg:"lab",
+    speaker:"Karolina",
+    dialogue:"Oh you came to the lab! Perfect. The answer is: Epinephrine. That is the other name for adrenaline. And what does adrenaline do? It is the primary neurotransmitter and hormone that drives the body's fight or flight response. It signals your heart to pump faster, forcing more oxygen rich blood to your brain and major muscle groups. Now go into the greenhouse room!",
+    answer:{label:"Answer: What is another name for adrenaline?", text:"Epinephrine"},
+    chemFact:{icon:"🧠",label:"What Adrenaline Does",text:"<strong>Adrenaline (Epinephrine)</strong> is the primary neurotransmitter and hormone that drives the body's fight or flight response. It signals your heart to pump faster, forcing more oxygen rich blood to your brain and major muscle groups."},
+    outcome:{type:"good",text:"✓ Learned: Adrenaline = Epinephrine"},
+    item:"⚡ Epinephrine Fact",
+    choices:[{icon:"🌿",text:"Head into the greenhouse room",sub:"Find Mr. Mayo",next:3}]
+  },
+  // 3 — GREENHOUSE / MR. MAYO
+  {
+    id:3, chapter:"Chapter 2: How Do We Fall?", location:"School Greenhouse", bg:"greenhouse",
+    speaker:"Mr. Mayo",
+    dialogue:"How does someone fall in love? Great question. The science has three stages. I can tell you the first part, but for the full story you have two options: head to the student center, or go into Mrs. Vogel's office.",
+    chemFact:{icon:"💡",label:"Three Stages of Love",text:"Falling in love is not magic. It is biology. Scientists have identified <strong>three distinct neurochemical stages</strong>: the biological drive, attraction, and attachment. Each involves different hormones and brain regions."},
     choices:[
-      { icon:"👤", text:"Stop and talk to Ms. Park in the hallway", label:"She seems to know something...", next:3 },
-      { icon:"➡️", text:"Head directly to the greenhouse", label:"No time to stop", next:4 }
+      {icon:"🏠",text:"Go to the student center",sub:"Find Rachel there",next:4},
+      {icon:"💼",text:"Go into Mrs. Vogel's office",sub:"Use her computer",next:5}
     ]
   },
+  // 4 — STUDENT CENTER / RACHEL (Stage 1)
   {
-    id:2, chapter:"Chapter 1: The Assignment", location:"Main Hallway", bg:"hallway",
-    speaker:"Narrator",
-    dialogue:"You walk past the closet without a second glance. You feel efficient — until you remember Dr. Vela mentioned 'hidden ingredients in unexpected places.' You've already missed one.",
-    outcome:{ type:"bad", text:"✗ You missed the Theobromine extract!" },
-    chemFact:{ icon:"⚠️", label:"Missed Ingredient", text:"<strong>Theobromine</strong> was in that closet! It's a key stimulant alkaloid from dark chocolate that triggers mild dopamine release. Without it, your potion will have a weaker euphoria-inducing effect." },
+    id:4, chapter:"Chapter 2: How Do We Fall?", location:"Student Center", bg:"student_center",
+    speaker:"Rachel",
+    dialogue:"You came to the student center! Here is the first part: the biological drive. Testosterone and estrogen are part of the initial spark and physical attraction that motivate persons to seek intimacy and a spark to pursue a partner. Before I tell you about Stage 2, you need to know what four components make someone really capture your attention. Go buy a muffin in the cafeteria and come back.",
+    answer:{label:"Stage 1: The Biological Drive",text:"Testosterone and estrogen are part of the initial spark and physical attraction that motivate persons to seek intimacy and a spark to pursue a partner."},
+    chemFact:{icon:"🔬",label:"Hormones of Attraction",text:"<strong>Testosterone</strong> and <strong>estrogen</strong> are steroid hormones that prime the body for seeking a partner. They influence physical development and the drive to pursue intimacy, acting as the very first chemical signals of love."},
+    outcome:{type:"good",text:"✓ Stage 1 Unlocked: The Biological Drive"},
+    item:"🧬 Biological Drive",
+    choices:[{icon:"🧁",text:"Go to the cafeteria to buy a muffin",sub:"Then come back to learn about attraction",next:7}]
+  },
+  // 5 — MRS. VOGEL'S OFFICE (Stage 1 via computer)
+  {
+    id:5, chapter:"Chapter 2: How Do We Fall?", location:"Mrs. Vogel's Office", bg:"office",
+    speaker:"Mrs. Vogel",
+    dialogue:"You found my office! Pull up my computer. You will see Stage 1: the biological drive. Testosterone and estrogen are part of the initial spark and physical attraction that motivate persons to seek intimacy and a spark to pursue a partner. But before Stage 2, you need to know: what four components make someone really capture your attention? Go find Mrs. Vogel in person.",
+    answer:{label:"Stage 1: The Biological Drive",text:"Testosterone and estrogen are part of the initial spark and physical attraction that motivate persons to seek intimacy and a spark to pursue a partner."},
+    chemFact:{icon:"💻",label:"From the Computer Files",text:"<strong>Testosterone</strong> and <strong>estrogen</strong> kick off the initial spark. These are among the most well-studied hormones in attraction research. They influence both physical features and the neurological drive to seek a partner."},
+    outcome:{type:"good",text:"✓ Stage 1 Unlocked: The Biological Drive"},
+    item:"🧬 Biological Drive",
+    choices:[{icon:"🔍",text:"Go find Mrs. Vogel in person to learn about attraction",sub:"She is somewhere in the school",next:6}]
+  },
+  // 6 — FIND MRS. VOGEL (Stage 2 part 1)
+  {
+    id:6, chapter:"Chapter 2: How Do We Fall?", location:"Mrs. Vogel's Office", bg:"office",
+    speaker:"Mrs. Vogel",
+    dialogue:"You found me! Now, let's talk about attraction, the obsessive high. Before I tell you more, here is what you need to know first. What four components make someone really capture your attention? Dopamine, norepinephrine, decreased serotonin, and deactivation of the prefrontal cortex. Now come with me to learn what happens next.",
+    answer:{label:"4 Components of Attraction",text:"Dopamine, norepinephrine, decreased serotonin, and deactivation of the prefrontal cortex."},
+    chemFact:{icon:"💘",label:"Stage 2: Attraction Chemistry",text:"<strong>Dopamine</strong> creates craving and reward. <strong>Norepinephrine</strong> causes racing heart and excitement. <strong>Decreased serotonin</strong> leads to obsessive thinking. Deactivation of the <strong>prefrontal cortex</strong> means your rational brain steps back, so love literally makes you less logical!"},
+    outcome:{type:"good",text:"✓ Four Components of Attraction Learned"},
+    item:"💘 Attraction Chemistry",
+    choices:[{icon:"➡️",text:"Continue with Mrs. Vogel to learn the rest",sub:"The reward center of the brain",next:10}]
+  },
+  // 7 — CAFETERIA (buy muffin → Stage 2 part 1)
+  {
+    id:7, chapter:"Chapter 2: How Do We Fall?", location:"Cafeteria", bg:"cafeteria",
+    speaker:"Rachel",
+    dialogue:"You bought a muffin! Great. Now here is what you needed to know first: what four components make someone really capture your attention? Dopamine, norepinephrine, decreased serotonin, and deactivation of the prefrontal cortex. Now let me tell you about Stage 2.",
+    answer:{label:"4 Components of Attraction",text:"Dopamine, norepinephrine, decreased serotonin, and deactivation of the prefrontal cortex."},
+    chemFact:{icon:"💘",label:"Stage 2: Attraction Chemistry",text:"<strong>Dopamine</strong> creates craving and reward. <strong>Norepinephrine</strong> causes racing heart and excitement. <strong>Decreased serotonin</strong> creates obsessive thinking about your person. <strong>Prefrontal cortex deactivation</strong> means your rational judgment literally goes offline when you are smitten."},
+    outcome:{type:"good",text:"✓ Four Components of Attraction Learned"},
+    item:"💘 Attraction Chemistry",
+    choices:[{icon:"➡️",text:"Hear about the brain's reward center",sub:"Stage 2, part 2",next:8}]
+  },
+  // 8 — STAGE 2 PART 2 (after muffin path)
+  {
+    id:8, chapter:"Chapter 2: How Do We Fall?", location:"Cafeteria", bg:"cafeteria",
+    speaker:"Rachel",
+    dialogue:"The brain's reward center, the central tegmental area, is flooded with these chemicals that make love feel exciting, addictive, and even obsessive. Now go into the student center bathroom and Mr. Mayo will be there to tell you about Stage 3.",
+    answer:{label:"Stage 2: Attraction (The Obsessive High)",text:"The brain's reward center (central tegmental area) is flooded with dopamine, norepinephrine, and related chemicals that make love feel exciting, addictive, and even obsessive."},
+    chemFact:{icon:"🧠",label:"The Reward Center",text:"The <strong>central tegmental area (VTA)</strong> is a dopamine factory. When activated by attraction, it floods the brain with dopamine. This is the same system activated by food, music, and certain drugs, which is why early love can feel genuinely addictive."},
+    outcome:{type:"good",text:"✓ Stage 2 Complete: The Obsessive High"},
+    item:"🔁 Reward Center Activated",
+    choices:[{icon:"🚻",text:"Go into the student center bathroom",sub:"Mr. Mayo will explain Stage 3",next:11}]
+  },
+  // 9 — STAGE 2 PART 2 (after office path)
+  {
+    id:9, chapter:"Chapter 2: How Do We Fall?", location:"Mrs. Vogel's Office", bg:"office",
+    speaker:"Mrs. Vogel",
+    dialogue:"Now the second half of Stage 2. The brain's reward center, the central tegmental area, is flooded with these chemicals that make love feel exciting, addictive, and even obsessive. You have two options for Stage 3: go into Classroom 1 or Classroom 2.",
+    answer:{label:"Stage 2: Attraction (The Obsessive High)",text:"The brain's reward center (central tegmental area) is flooded with dopamine, norepinephrine, and related chemicals that make love feel exciting, addictive, and even obsessive."},
+    chemFact:{icon:"🧠",label:"The Reward Center",text:"The <strong>central tegmental area (VTA)</strong> is a dopamine factory. When activated by attraction, it floods the brain with dopamine. This is the same system activated by food, music, and certain drugs, which is why early love can feel genuinely addictive."},
+    outcome:{type:"good",text:"✓ Stage 2 Complete: The Obsessive High"},
+    item:"🔁 Reward Center Activated",
     choices:[
-      { icon:"👤", text:"Stop and talk to Ms. Park in the hallway", label:"She might help you recover", next:3 },
-      { icon:"➡️", text:"Head directly to the greenhouse", label:"Move on — cut your losses", next:4 }
+      {icon:"🏫",text:"Go into Classroom 1",sub:"Rachel will explain Stage 3",next:12},
+      {icon:"🏫",text:"Go into Classroom 2",sub:"Karolina will explain Stage 3",next:12}
     ]
   },
+  // 10 — STAGE 2 PART 2 (office path continued from scene 6)
   {
-    id:3, chapter:"Chapter 2: The Gardener's Secret", location:"Main Hallway", bg:"hallway",
-    speaker:"Ms. Park",
-    dialogue:"Oh, you're working on the Vela challenge? I was his lab partner years ago. I hid something in the greenhouse — rose root extract. It boosts serotonin naturally. The lock combination is 6-02-23.",
-    outcome:{ type:"good", text:"✓ You got the greenhouse combination!" }, item:"🔑 Greenhouse Code: 6-02-23",
-    chemFact:{ icon:"🌹", label:"Chemistry Hint", text:"The code 6-02-23 references <strong>Avogadro's Number</strong> (6.02 × 10²³) — the number of particles in one mole. <strong>Serotonin</strong> (C₁₀H₁₂N₂O) is a monoamine neurotransmitter modulated by rose extract compounds." },
+    id:10, chapter:"Chapter 2: How Do We Fall?", location:"Mrs. Vogel's Office", bg:"office",
+    speaker:"Mrs. Vogel",
+    dialogue:"The brain's reward center, the central tegmental area, is flooded with these chemicals that make love feel exciting, addictive, and even obsessive. For Stage 3, you have two options: go to Classroom 1 or Classroom 2.",
+    answer:{label:"Stage 2: Attraction (The Obsessive High)",text:"The brain's reward center (central tegmental area) is flooded with dopamine, norepinephrine, and related chemicals, making love feel exciting, addictive, and even obsessive."},
+    chemFact:{icon:"🧠",label:"The Reward Center",text:"The <strong>central tegmental area (VTA)</strong> floods the brain with dopamine during attraction. This is the same reward circuitry activated by music, food, and other powerful pleasures, which explains why early love feels so all-consuming."},
+    outcome:{type:"good",text:"✓ Stage 2 Complete: The Obsessive High"},
+    item:"🔁 Reward Center Activated",
     choices:[
-      { icon:"🌿", text:"Go to the greenhouse now", label:"You have the code — move fast", next:5 },
-      { icon:"📚", text:"Stop at the library first", label:"Check the synthesis notes", next:6 }
+      {icon:"🏫",text:"Go into Classroom 1",sub:"Rachel will tell you about Stage 3",next:12},
+      {icon:"🏫",text:"Go into Classroom 2",sub:"Karolina will tell you about Stage 3",next:12}
     ]
   },
+  // 11 — BATHROOM / MR. MAYO (Stage 3)
   {
-    id:4, chapter:"Chapter 2: The Gardener's Secret", location:"Greenhouse Entrance", bg:"greenhouse",
-    speaker:"Narrator",
-    dialogue:"You reach the greenhouse — but the door has a combination lock. You have no idea what the numbers are. You try random combinations for 10 minutes before a maintenance worker opens it for you. Time wasted.",
-    outcome:{ type:"bad", text:"✗ No code — you lost 10 minutes!" },
-    chemFact:{ icon:"💡", label:"Missed Hint", text:"Ms. Park knew the code was <strong>6-02-23</strong> — Avogadro's Number (6.02 × 10²³). Moles, concentration, and particle counts are the backbone of all stoichiometry calculations." },
-    choices:[
-      { icon:"🌿", text:"Enter the greenhouse and search", label:"Better late than never", next:7 },
-      { icon:"📚", text:"Visit the library for synthesis notes", label:"Knowledge is an ingredient too", next:6 }
-    ]
+    id:11, chapter:"Chapter 3: Attachment", location:"Student Center Bathroom", bg:"bathroom",
+    speaker:"Mr. Mayo",
+    dialogue:"Ha, not where you expected a chemistry lesson! Stage 3: Attachment. The long-term bond. The initial rush of infatuation mellows out and the relationship becomes a phase of long term bonding. The brain replaces those obsessive highs with calming and steady chemicals to create lifelong relationships. The two chemicals responsible are oxytocin and vasopressin, which foster deep trust and attachment and promote feelings of protection, commitment, and long term security. Now head out to the front courtyard!",
+    answer:{label:"Stage 3: Attachment, The Long-Term Bond",text:"Oxytocin and vasopressin foster deep trust and attachment and promote feelings of protection, commitment, and long term security."},
+    chemFact:{icon:"🤝",label:"Stage 3: Attachment Chemistry",text:"<strong>Oxytocin</strong> (the bonding hormone) and <strong>vasopressin</strong> (linked to loyalty and long-term commitment) replace the dopamine rush of early love. These calming neuropeptides shift the relationship from addictive excitement to stable, secure attachment."},
+    outcome:{type:"good",text:"✓ Stage 3 Unlocked: Oxytocin + Vasopressin"},
+    item:"🤝 Attachment Bond",
+    choices:[{icon:"🌳",text:"Head out to the front courtyard",sub:"Rachel and Karolina are waiting",next:12}]
   },
+  // 12 — COURTYARD (adrenaline's role — Rachel + Karolina)
   {
-    id:5, chapter:"Chapter 2: The Gardener's Secret", location:"School Greenhouse", bg:"greenhouse",
-    speaker:"Narrator",
-    dialogue:"You punch in 6-02-23. Click. The door swings open. You find the rose root extract immediately — labeled 'Rhodiola rosea — serotonergic adaptogen.' You also spot lavender oil nearby and grab it.",
-    outcome:{ type:"good", text:"✓ Rose Root Extract + Lavender Oil collected!" }, item:"🌹 Rose Root Extract", item2:"💜 Lavender Oil",
-    chemFact:{ icon:"🌿", label:"Ingredients #2 & #3 Found", text:"<strong>Rhodiola rosea</strong> contains salidroside and rosavins, which modulate serotonin. <strong>Linalool</strong> in lavender binds GABA receptors, reducing anxiety. Both involve <strong>receptor-ligand chemistry</strong> — molecules binding protein active sites by molecular geometry." },
-    choices:[
-      { icon:"🔬", text:"Go to the lab to begin mixing", label:"You have enough to start", next:8 },
-      { icon:"🏃", text:"Find the nurse's office first", label:"Rumor: an ingredient is hidden there", next:9 }
-    ]
+    id:12, chapter:"Chapter 4: Adrenaline's Role", location:"Front Courtyard", bg:"courtyard",
+    speaker:"Rachel",
+    dialogue:"Now the big connection. How does adrenaline play a role in falling in love? It acts as the immediate physical trigger for romantic infatuation! Your body is shocked into a state of high alert and turns the abstract emotional attraction into concrete physical emotions! Now walk to the field where Mrs. Vogel will tell you what happens when your adrenaline kicks in.",
+    answer:{label:"How Does Adrenaline Play a Role?",text:"It acts as the immediate physical trigger for romantic infatuation! Your body is shocked into a state of high alert and turns the abstract emotional attraction into concrete physical emotions."},
+    chemFact:{icon:"💥",label:"Adrenaline's Role in Love",text:"<strong>Adrenaline (epinephrine)</strong> is not just for emergencies. It is the chemical bridge between emotional attraction and physical sensation. When you see your crush, your body responds as if in mild danger: heart racing, pupils dilating, palms sweating. This is adrenaline making attraction feel real and urgent."},
+    outcome:{type:"good",text:"✓ Adrenaline's Role in Love Discovered"},
+    item:"💥 Adrenaline's Role",
+    choices:[{icon:"🏃",text:"Walk to the field",sub:"Mrs. Vogel has the final answer",next:13}]
   },
+  // 13 — FIELD / MRS. VOGEL (final answer)
   {
-    id:6, chapter:"Chapter 2: The Gardener's Secret", location:"School Library", bg:"library",
-    speaker:"Librarian Chen",
-    dialogue:"You came for the synthesis notes? Smart. Dr. Vela left a sealed envelope here with exact molecular weights and pH levels. Also — here, take this vial of vanilla extract. Vanillin boosts mood through dopaminergic pathways.",
-    outcome:{ type:"good", text:"✓ Synthesis Notes + Vanillin extract collected!" }, item:"📋 Synthesis Notes", item2:"🌼 Vanillin Extract",
-    chemFact:{ icon:"📗", label:"Ingredient #4 Found + Notes", text:"<strong>Vanillin</strong> (C₈H₈O₃) is a phenolic aldehyde that triggers mild dopaminergic responses. The notes specify mixing at <strong>pH 7.4</strong> (blood pH) in aqueous solution — a key concept in <strong>buffer chemistry</strong>." },
-    choices:[
-      { icon:"🌿", text:"Now go to the greenhouse", label:"Library stop was worth it", next:7 },
-      { icon:"🔬", text:"Head straight to the lab", label:"Start synthesis with what you have", next:8 }
-    ]
-  },
-  {
-    id:7, chapter:"Chapter 2: The Gardener's Secret", location:"School Greenhouse", bg:"greenhouse",
-    speaker:"Narrator",
-    dialogue:"Inside the greenhouse, the rose root extract is buried under dense foliage. After searching, you find it — but the lavender oil is gone, taken by another student who got here first.",
-    outcome:{ type:"neutral", text:"~ Rose Root Extract found — Lavender Oil taken by someone else." }, item:"🌹 Rose Root Extract",
-    chemFact:{ icon:"🌿", label:"Ingredient #2 Found (Partial)", text:"<strong>Rhodiola rosea</strong> supports serotonin regulation. Without lavender's <strong>linalool</strong>, your potion's <strong>entourage effect</strong> — where compounds amplify each other's action — is reduced significantly." },
-    choices:[
-      { icon:"🔬", text:"Go to the lab — start synthesis", label:"Work with what you have", next:8 },
-      { icon:"🏃", text:"Check the nurse's office", label:"One more ingredient might be there", next:9 }
-    ]
-  },
-  {
-    id:8, chapter:"Chapter 3: The Synthesis", location:"Chemistry Lab", bg:"lab",
-    speaker:"Narrator",
-    dialogue:"You lay out your ingredients and begin synthesis. Carefully measuring each compound using molarity calculations, the mixture turns a luminous pink — but you notice it looks slightly off. Something is missing.",
-    outcome:{ type:"neutral", text:"~ Synthesis started. You need one more ingredient." },
-    chemFact:{ icon:"⚗️", label:"Chem Concept: Molarity", text:"Each ingredient is dissolved at a precise <strong>molarity (M = mol/L)</strong>. If you need 0.05 M PEA in 200 mL, that's 0.05 × 0.2 = <strong>0.01 mol</strong>. This requires knowing <strong>molar mass</strong> and careful stoichiometry." },
-    choices:[
-      { icon:"🏃", text:"Run to the nurse's office — get the last ingredient", label:"There's still time", next:9 },
-      { icon:"✅", text:"Finalize the potion with what you have", label:"It might still work...", next:10 }
-    ]
-  },
-  {
-    id:9, chapter:"Chapter 3: The Synthesis", location:"Nurse's Office", bg:"nurse",
-    speaker:"Nurse Rivera",
-    dialogue:"Looking for something? Dr. Vela asked me to hold this — pure phenylethylamine solution, the 'molecule of love.' It's yours if you tell me: what bond holds its amine group together? ...Covalent. Exactly. Here you go.",
-    outcome:{ type:"good", text:"✓ Phenylethylamine (PEA) solution collected!" }, item:"💗 Phenylethylamine (PEA)",
-    chemFact:{ icon:"💗", label:"Ingredient #5 Found — The Key Molecule", text:"<strong>Phenylethylamine (PEA)</strong>, C₈H₁₁N, is a trace amine that stimulates dopamine and norepinephrine release during attraction. Structure: benzene ring + ethyl chain + amine group, all joined by <strong>covalent bonds</strong>." },
-    choices:[
-      { icon:"🔬", text:"Return to the lab and complete the potion", label:"You have everything!", next:11 }
-    ]
-  },
-  {
-    id:10, chapter:"Ending: Incomplete Formula", location:"Chemistry Lab", bg:"lab",
-    speaker:"Dr. Vela",
-    dialogue:"You've created something... but it's missing the PEA. Without phenylethylamine, you have a pleasant aromatherapy blend, not a Love Potion. Not bad chemistry — but the quest continues. Try again?",
-    outcome:{ type:"bad", text:"✗ Incomplete potion — missing PEA!" },
-    chemFact:{ icon:"🔁", label:"What Went Wrong", text:"Without <strong>phenylethylamine</strong>, the potion lacks its primary dopaminergic trigger. Like a reaction missing a catalyst — the other reagents are present, but <strong>activation energy</strong> can't be overcome. Every molecule matters in a synthesis!" },
-    isEnd:true, endType:"incomplete"
-  },
-  {
-    id:11, chapter:"Ending: The Love Potion", location:"Chemistry Lab", bg:"lab",
-    speaker:"Dr. Vela",
-    dialogue:"Remarkable. You've assembled all five compounds. The solution glows pink — a real neurochemical cocktail of joy, calm, and connection. This is exactly what chemistry is: the science of what makes us human.",
-    outcome:{ type:"good", text:"✓ Love Potion fully synthesized!" },
-    chemFact:{ icon:"✨", label:"Complete Synthesis", text:"Your potion: <strong>PEA</strong> (dopaminergic) + <strong>Theobromine</strong> (stimulant) + <strong>Rhodiola</strong> (serotonergic) + <strong>Linalool</strong> (anxiolytic) + <strong>Vanillin</strong> (mood enhancer). Together they create an <strong>entourage effect</strong> across multiple neurotransmitter systems." },
+    id:13, chapter:"Chapter 5: The Final Discovery", location:"The Field", bg:"field",
+    speaker:"Mrs. Vogel",
+    dialogue:"You made it! Here is the final discovery. What happens when your adrenaline kicks in? Sweaty palms, racing heart, butterflies in your stomach, and dilated pupils. These are the physical signs that your body's chemistry is telling you something important. That is the science of falling in love!",
+    answer:{label:"What happens when your adrenaline kicks in?",text:"Sweaty palms, racing heart, butterflies in your stomach, and dilated pupils."},
+    chemFact:{icon:"🦋",label:"The Physical Signs of Love",text:"<strong>Sweaty palms</strong> (eccrine gland activation), <strong>racing heart</strong> (increased cardiac output), <strong>butterflies</strong> (reduced gut blood flow), and <strong>dilated pupils</strong> (sympathetic nervous system response) are all driven by adrenaline. Your body literally cannot hide love."},
+    outcome:{type:"good",text:"✓ Hunt Complete! You discovered the chemistry of love!"},
+    item:"🦋 Adrenaline Signs",
     isEnd:true, endType:"complete"
-  }
+  },
+  // 14 — placeholder for classroom 1/2 stage 3 (same content either path)
+  {
+    id:14, chapter:"Chapter 3: Attachment", location:"Classroom", bg:"classroom2",
+    speaker:"Karolina",
+    dialogue:"Welcome! Stage 3 is all about attachment: the long-term bond. The initial rush of infatuation mellows out and the relationship becomes a phase of long term bonding. The brain replaces those obsessive highs with calming chemicals. The two key chemicals are oxytocin and vasopressin, which foster deep trust and attachment and promote feelings of protection, commitment, and long term security. Head to the front courtyard!",
+    answer:{label:"Stage 3: Attachment, The Long-Term Bond",text:"Oxytocin and vasopressin foster deep trust and attachment and promote feelings of protection, commitment, and long term security."},
+    chemFact:{icon:"🤝",label:"Stage 3: Attachment Chemistry",text:"<strong>Oxytocin</strong> and <strong>vasopressin</strong> replace the dopamine rush of early love with calming, stable bonding. Oxytocin is released during hugging, touching, and social bonding, literally building trust at a chemical level."},
+    outcome:{type:"good",text:"✓ Stage 3 Unlocked: Oxytocin + Vasopressin"},
+    item:"🤝 Attachment Bond",
+    choices:[{icon:"🌳",text:"Head out to the front courtyard",sub:"Rachel and Karolina are waiting",next:12}]
+  },
 ];
+// Patch scene 12's NPCS to include both NPCs
+SCENE_NPCS[12] = [{key:'rachel',cx:220,ground:195,facing:'right',hold:null,cls:'cl'},{key:'karolina',cx:580,ground:195,facing:'left',hold:null,cls:'cr'}];
 
-// =====================================================================
-// GAME STATE + ENGINE
-// =====================================================================
-let state = { sceneId:0, items:[], history:[] };
-const TOTAL = 11;
+// ============================================================
+// STATE
+// ============================================================
+let state = { selectedChar:null, sceneId:0, items:[], history:[] };
 
-function startGame() {
+// ============================================================
+// CHARACTER SELECT
+// ============================================================
+function goToCharSelect() {
   document.getElementById('title-screen').classList.add('fade-out');
+  setTimeout(() => {
+    document.getElementById('title-screen').style.display='none';
+    const cs = document.getElementById('char-select');
+    cs.style.display='flex';
+    buildCharGrid();
+  }, 700);
+}
+
+function buildCharGrid() {
+  const grid = document.getElementById('char-grid');
+  grid.innerHTML = '';
+  PLAYABLE.forEach(ch => {
+    const card = document.createElement('div');
+    card.className = 'char-card';
+    card.dataset.id = ch.id;
+    // mini preview SVG
+    const svgStr = buildCharPreview(ch);
+    card.innerHTML = `${svgStr}<div class="char-cname">${ch.name}</div>`;
+    card.onclick = () => {
+      document.querySelectorAll('.char-card').forEach(c=>c.classList.remove('selected'));
+      card.classList.add('selected');
+      state.selectedChar = ch;
+      const btn = document.getElementById('confirm-btn');
+      btn.classList.add('active');
+    };
+    grid.appendChild(card);
+  });
+}
+
+function buildCharPreview(ch) {
+  const cx=35, gy=82;
+  const headR=12, neckH=4, torsoH=28, legH=28, footH=6, armH=22;
+  const headCY = gy-legH-footH-torsoH-neckH-headR;
+  const torsoY = gy-legH-footH-torsoH;
+  const hipY = gy-legH-footH;
+  const shoulderY = torsoY+4;
+  const handY = shoulderY+armH;
+  const neckY = gy-legH-footH-torsoH-neckH;
+  let hairSvg='';
+  const hs=ch.hairStyle;
+  if(hs==='straight-long'){hairSvg=`<ellipse cx="${cx}" cy="${headCY-headR*0.5}" rx="${headR+1}" ry="${headR*0.7}" fill="${ch.hair}"/><rect x="${cx-headR+2}" y="${headCY}" width="4" height="22" rx="2" fill="${ch.hair}"/><rect x="${cx+headR-6}" y="${headCY}" width="4" height="22" rx="2" fill="${ch.hair}"/>`;}
+  else if(hs==='straight-med'){hairSvg=`<ellipse cx="${cx}" cy="${headCY-headR*0.5}" rx="${headR+1}" ry="${headR*0.7}" fill="${ch.hair}"/><rect x="${cx-headR+2}" y="${headCY}" width="4" height="12" rx="2" fill="${ch.hair}"/><rect x="${cx+headR-6}" y="${headCY}" width="4" height="12" rx="2" fill="${ch.hair}"/>`;}
+  else if(hs==='curly-long'){hairSvg=`<ellipse cx="${cx}" cy="${headCY-headR*0.5}" rx="${headR+3}" ry="${headR*0.85}" fill="${ch.hair}"/><circle cx="${cx-headR+1}" cy="${headCY+6}" r="4" fill="${ch.hair}"/><circle cx="${cx+headR-1}" cy="${headCY+6}" r="4" fill="${ch.hair}"/><circle cx="${cx-headR}" cy="${headCY+14}" r="4" fill="${ch.hair}"/><circle cx="${cx+headR}" cy="${headCY+14}" r="4" fill="${ch.hair}"/>`;}
+  else if(hs==='curly-short'){hairSvg=`<ellipse cx="${cx}" cy="${headCY-headR*0.5}" rx="${headR+3}" ry="${headR*0.78}" fill="${ch.hair}"/><circle cx="${cx-headR+2}" cy="${headCY+2}" r="3.5" fill="${ch.hair}"/><circle cx="${cx+headR-2}" cy="${headCY+2}" r="3.5" fill="${ch.hair}"/>`;}
+  else{hairSvg=`<ellipse cx="${cx}" cy="${headCY-headR*0.58}" rx="${headR+1}" ry="${headR*0.62}" fill="${ch.hair}"/>`;}
+  const glSvg = ch.glasses ? `<circle cx="${cx-4}" cy="${headCY+1}" r="2.8" fill="none" stroke="#9ca3af" stroke-width="1"/><circle cx="${cx+4}" cy="${headCY+1}" r="2.8" fill="none" stroke="#9ca3af" stroke-width="1"/><line x1="${cx-1.2}" y1="${headCY+1}" x2="${cx+1.2}" y2="${headCY+1}" stroke="#9ca3af" stroke-width="0.8"/>` : '';
+  return `<svg viewBox="0 0 70 90" xmlns="http://www.w3.org/2000/svg" width="70" height="90">
+    <ellipse cx="${cx}" cy="${gy+1}" rx="13" ry="3" fill="rgba(0,0,0,0.2)"/>
+    <rect x="${cx-8}" y="${hipY}" width="7" height="${legH+footH}" rx="3" fill="${ch.outfit}"/>
+    <rect x="${cx+1}" y="${hipY}" width="7" height="${legH+footH}" rx="3" fill="${ch.outfit}"/>
+    <ellipse cx="${cx-5}" cy="${gy}" rx="6" ry="${footH/2}" fill="#1a0d2e"/>
+    <ellipse cx="${cx+5}" cy="${gy}" rx="6" ry="${footH/2}" fill="#1a0d2e"/>
+    <rect x="${cx-10}" y="${torsoY}" width="20" height="${torsoH+neckH}" rx="4" fill="${ch.outfit}"/>
+    <line x1="${cx-10}" y1="${shoulderY}" x2="${cx-14}" y2="${handY}" stroke="${ch.outfit}" stroke-width="6" stroke-linecap="round"/>
+    <line x1="${cx+10}" y1="${shoulderY}" x2="${cx+13}" y2="${handY}" stroke="#1a0d2e" stroke-width="6" stroke-linecap="round"/>
+    <rect x="${cx-3}" y="${neckY}" width="6" height="${neckH+2}" fill="${ch.skin}"/>
+    <ellipse cx="${cx}" cy="${headCY}" rx="${headR}" ry="${headR+1}" fill="${ch.skin}" stroke="#1a0d2e" stroke-width="1"/>
+    ${hairSvg}
+    <circle cx="${cx-4}" cy="${headCY+1}" r="1.7" fill="#fff"/>
+    <circle cx="${cx+4}" cy="${headCY+1}" r="1.7" fill="#fff"/>
+    <circle cx="${cx-3.5}" cy="${headCY+1.3}" r="1.05" fill="#1a0d2e"/>
+    <circle cx="${cx+4.5}" cy="${headCY+1.3}" r="1.05" fill="#1a0d2e"/>
+    <path d="M${cx-3},${headCY+6} Q${cx},${headCY+9} ${cx+3},${headCY+6}" fill="none" stroke="#1a0d2e" stroke-width="1" stroke-linecap="round"/>
+    ${glSvg}
+  </svg>`;
+}
+
+function confirmChar() {
+  if (!state.selectedChar) return;
+  document.getElementById('char-select').style.display='none';
   const g = document.getElementById('game');
-  g.style.display = 'flex';
-  g.style.flexDirection = 'column';
-  setTimeout(() => document.getElementById('title-screen').style.display='none', 800);
+  g.style.display='flex';
+  g.style.flexDirection='column';
   renderScene(0);
 }
 
+// ============================================================
+// SCENE RENDER
+// ============================================================
 function renderScene(id) {
-  state.sceneId = id;
-  state.history.push(id);
-  const s = SCENES[id];
+  if(id===14){ const s=SCENES.find(x=>x.id===14); renderSceneData(s); return; }
+  const s = SCENES.find(x=>x.id===id) || SCENES[0];
+  renderSceneData(s);
+}
+
+function renderSceneData(s) {
+  state.sceneId = s.id;
+  state.history.push(s.id);
 
   document.getElementById('chapter-label').textContent = s.chapter;
+  const pct = Math.min(100, Math.round((state.history.filter((v,i,a)=>a.indexOf(v)===i).length / TOTAL_SCENES)*100));
+  document.getElementById('progress-fill').style.width = pct+'%';
+  document.getElementById('progress-pct').textContent = pct+'%';
 
-  const pct = Math.round((id / TOTAL) * 100);
-  document.getElementById('progress-fill').style.width = pct + '%';
-  document.getElementById('progress-pct').textContent = pct + '%';
+  // Build stage SVG
+  const bgFn = BKGS[s.bg] || (()=>'');
+  const npcs = SCENE_NPCS[s.id] || [];
+  const pp = PLAYER_POS[s.id] || {cx:600,ground:200,facing:'left',hold:null,cls:'cr'};
+  const playerChar = state.selectedChar || PLAYABLE[0];
 
-  // Build scene SVG
-  const bgFn = BKGS[s.bg] || (() => '');
-  const chars = SCENE_CHARS[id] || [];
-  const charsSvg = chars.map(c => buildChar(c.key, c.cx, c.ground, c.facing, c.hold, c.cls)).join('');
-  const stageSvg = `<svg viewBox="0 0 800 260" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%;">
-    ${bgFn()}
-    ${charsSvg}
-  </svg>`;
+  const npcsSvg = npcs.map(n => buildChar(NPCS[n.key], n.cx, n.ground, n.facing, n.hold, n.cls)).join('');
+  const playerSvg = buildChar(playerChar, pp.cx, pp.ground, pp.facing, pp.hold, pp.cls);
 
-  document.getElementById('scene-stage').innerHTML = stageSvg;
+  document.getElementById('scene-stage').innerHTML = `<svg viewBox="0 0 800 250" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%;">${bgFn()}${npcsSvg}${playerSvg}</svg>`;
   document.getElementById('loc-tag').textContent = s.location;
 
-  // Speaker portrait
-  const speakerKey = SPEAKER_CHAR[s.speaker] || 'player';
-  const bgColors = { vela:'#0c1f35', park:'#2d0a1a', chen:'#041f13', rivera:'#0d1520', player:'#1a0d2e' };
-  document.getElementById('speaker-avatar-small').innerHTML = buildPortrait(speakerKey, bgColors[speakerKey]);
-  document.getElementById('speaker-name').textContent = s.speaker;
-  document.getElementById('dialogue-text').textContent = '';
-  typeText('dialogue-text', s.dialogue);
+  // Speaker avatar
+  const npcKey = SPEAKER_NPC[s.speaker];
+  const spkCfg = npcKey ? NPCS[npcKey] : playerChar;
+  const spkBg = npcKey ? (NPC_BG[npcKey]||'#1e1729') : '#1a0d2e';
+  document.getElementById('spk-avatar').innerHTML = buildPortrait(spkCfg, spkBg);
+  document.getElementById('spk-name').textContent = s.speaker;
+  document.getElementById('dlg-text').textContent = '';
+  typeText('dlg-text', s.dialogue);
 
-  if (s.item)  addItem(s.item);
-  if (s.item2) addItem(s.item2);
+  if(s.item)  addItem(s.item);
+  if(s.item2) addItem(s.item2);
   renderItems();
 
+  // Answer box
+  const aa = document.getElementById('answer-area');
+  aa.innerHTML = s.answer ? `<div class="answer-box"><div class="answer-label">📝 ${s.answer.label}</div><div class="answer-text">${s.answer.text}</div></div>` : '';
+
   // Chem fact
-  const ca = document.getElementById('chem-fact-area');
-  ca.innerHTML = s.chemFact ? `<div class="chem-fact">
-    <span class="chem-icon">${s.chemFact.icon}</span>
-    <div>
-      <div class="chem-label">🔬 ${s.chemFact.label}</div>
-      <div class="chem-text">${s.chemFact.text}</div>
-    </div>
-  </div>` : '';
+  const ca = document.getElementById('chem-area');
+  ca.innerHTML = s.chemFact ? `<div class="chem-fact"><span class="chem-icon">${s.chemFact.icon}</span><div><div class="chem-label">🔬 ${s.chemFact.label}</div><div class="chem-text">${s.chemFact.text}</div></div></div>` : '';
 
   // Outcome
   const oa = document.getElementById('outcome-area');
@@ -869,71 +867,71 @@ function renderScene(id) {
   // Choices
   const qa = document.getElementById('choices-area');
   qa.innerHTML = '';
-  if (s.isEnd) { renderEnd(s); return; }
+  if(s.isEnd){ renderEnd(s); return; }
 
-  setTimeout(() => {
+  setTimeout(()=>{
     const box = document.createElement('div');
     box.className = 'choices-container';
-    s.choices.forEach(ch => {
+    (s.choices||[]).forEach(ch=>{
       const btn = document.createElement('button');
-      btn.className = 'choice-btn';
-      btn.innerHTML = `<span class="choice-icon">${ch.icon}</span><div><div class="choice-text">${ch.text}</div><div class="choice-label">${ch.label}</div></div>`;
-      btn.onclick = () => {
-        box.querySelectorAll('.choice-btn').forEach(b => b.disabled=true);
+      btn.className='choice-btn';
+      btn.innerHTML=`<span class="choice-icon">${ch.icon}</span><div><div>${ch.text}</div><div class="choice-sub">${ch.sub||''}</div></div>`;
+      btn.onclick=()=>{
+        box.querySelectorAll('.choice-btn').forEach(b=>b.disabled=true);
         btn.style.borderColor='var(--accent)';
         btn.style.background='rgba(192,132,252,0.2)';
-        setTimeout(() => renderScene(ch.next), 480);
+        setTimeout(()=>renderScene(ch.next),450);
       };
       box.appendChild(btn);
     });
     qa.appendChild(box);
-  }, 380);
+  },370);
 }
 
 function renderEnd(s) {
   const qa = document.getElementById('choices-area');
-  const ok = s.endType === 'complete';
-  const recipe = ok ? `<div class="potion-recipe">
-    <div class="recipe-title">Final Love Potion Recipe</div>
-    <div class="recipe-item"><span class="ri-dot">▸</span> Phenylethylamine (PEA) — C₈H₁₁N — dopamine trigger</div>
-    <div class="recipe-item"><span class="ri-dot">▸</span> Theobromine — C₇H₈N₄O₂ — mood elevator</div>
-    <div class="recipe-item"><span class="ri-dot">▸</span> Rhodiola rosea extract — serotonin regulator</div>
-    <div class="recipe-item"><span class="ri-dot">▸</span> Linalool (Lavender) — GABA receptor calmer</div>
-    <div class="recipe-item"><span class="ri-dot">▸</span> Vanillin — C₈H₈O₃ — dopaminergic boost</div>
-    <div class="recipe-item"><span class="ri-dot">▸</span> Mix at pH 7.4 in aqueous solution at 37°C</div>
-  </div>` : '';
   qa.innerHTML = `<div class="end-screen">
-    <div style="font-size:3rem;margin-bottom:1rem;">${ok?'💗':'🧪'}</div>
-    <h2>${ok?'Love Potion Complete!':'Quest Incomplete'}</h2>
-    <p>${ok
-      ? 'You made every right choice. All five neurochemical ingredients combined — a beautiful example of how chemistry underlies human emotion.'
-      : 'Your potion is missing a key ingredient. The best chemists learn from incomplete reactions. Try again and make different choices!'
-    }</p>
-    ${recipe}
-    <button class="restart-btn" onclick="restartGame()">↺ Play Again</button>
+    <div style="font-size:2.5rem;margin-bottom:0.8rem;">💗</div>
+    <h2>You discovered the chemistry of love!</h2>
+    <p>You followed the clues across the school and uncovered all three stages, the science behind why we fall in love.</p>
+    <div class="end-facts">
+      <div style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--accent);font-weight:700;margin-bottom:0.6rem;">What You Learned</div>
+      <div class="end-fact-item"><span class="dot">▸</span> Adrenaline = <strong>Epinephrine</strong>, the fight or flight hormone</div>
+      <div class="end-fact-item"><span class="dot">▸</span> Stage 1, Biological Drive: <strong>Testosterone + Estrogen</strong> create initial attraction</div>
+      <div class="end-fact-item"><span class="dot">▸</span> Stage 2, Attraction: <strong>Dopamine, Norepinephrine, decreased Serotonin</strong> + prefrontal cortex deactivation</div>
+      <div class="end-fact-item"><span class="dot">▸</span> Reward Center: <strong>Central Tegmental Area</strong> flooded with excitement chemicals</div>
+      <div class="end-fact-item"><span class="dot">▸</span> Stage 3, Attachment: <strong>Oxytocin + Vasopressin</strong> create long-term bond</div>
+      <div class="end-fact-item"><span class="dot">▸</span> Adrenaline's role: turns abstract attraction into <strong>concrete physical emotions</strong></div>
+      <div class="end-fact-item"><span class="dot">▸</span> Physical signs: <strong>sweaty palms, racing heart, butterflies, dilated pupils</strong></div>
+    </div>
+    <button class="reset-btn" onclick="resetGame()">↺ Play Again</button>
   </div>`;
   document.getElementById('progress-fill').style.width='100%';
   document.getElementById('progress-pct').textContent='100%';
 }
 
-function addItem(item) { if (!state.items.includes(item)) state.items.push(item); }
-
+function addItem(item) { if(!state.items.includes(item)) state.items.push(item); }
 function renderItems() {
-  document.getElementById('items-bar').innerHTML =
-    state.items.map(i => `<div class="item-badge">${i}</div>`).join('');
+  document.getElementById('items-bar').innerHTML = state.items.map(i=>`<div class="item-badge">${i}</div>`).join('');
 }
-
-function typeText(id, text) {
-  const el = document.getElementById(id);
-  el.textContent = '';
-  let i = 0;
-  (function tick() { if (i < text.length) { el.textContent += text[i++]; setTimeout(tick, 20); } })();
+function typeText(elId, text) {
+  const el=document.getElementById(elId);
+  el.textContent='';
+  let i=0;
+  (function tick(){ if(i<text.length){ el.textContent+=text[i++]; setTimeout(tick,18); } })();
 }
-
-function restartGame() {
-  state = { sceneId:0, items:[], history:[] };
+function resetGame() {
+  state = { selectedChar:null, sceneId:0, items:[], history:[] };
   document.getElementById('items-bar').innerHTML='';
-  renderScene(0);
+  document.getElementById('choices-area').innerHTML='';
+  document.getElementById('answer-area').innerHTML='';
+  document.getElementById('chem-area').innerHTML='';
+  document.getElementById('outcome-area').innerHTML='';
+  document.getElementById('game').style.display='none';
+  const ts = document.getElementById('title-screen');
+  ts.style.display='flex';
+  ts.classList.remove('fade-out');
+  ts.style.opacity='1';
 }
 </script>
 </body>
