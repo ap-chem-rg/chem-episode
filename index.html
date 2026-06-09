@@ -510,13 +510,14 @@ const SCENE_NPCS = {
   5:  [], // just player on computer
   6:  [{key:'vogel',   cx:620, ground:200, facing:'left',  hold:'clipboard', cls:'cr'}],
   7:  [{key:'rachel',  cx:180, ground:200, facing:'right', hold:null,        cls:'cl'}],
-  8:  [{key:'mayo',    cx:180, ground:205, facing:'right', hold:null,        cls:'cl'}],
+  8:  [{key:'rachel',  cx:180, ground:200, facing:'right', hold:null,        cls:'cl'}],
   9:  [{key:'karolina',cx:620, ground:195, facing:'left',  hold:null,        cls:'cr'}],
   10: [{key:'vogel',   cx:620, ground:195, facing:'left',  hold:null,        cls:'cr'}],
   11: [{key:'rachel',  cx:620, ground:200, facing:'left',  hold:null,        cls:'cr'},{key:'karolina',cx:400,ground:200,facing:'right',hold:null,cls:'cc'}],
   12: [], // player alone in courtyard
   13: [{key:'vogel',   cx:180, ground:170, facing:'right', hold:null,        cls:'cl'}],
-  14: [], // end
+  14: [{key:'rachel',  cx:180, ground:195, facing:'right', hold:null, cls:'cl'}],
+  15: [{key:'karolina',cx:620, ground:195, facing:'left',  hold:null, cls:'cr'}],
 };
 
 // player position per scene
@@ -535,7 +536,8 @@ const PLAYER_POS = {
   11:{cx:180,ground:200,facing:'right',hold:'muffin',cls:'cl'},
   12:{cx:400,ground:195,facing:'right',hold:null,cls:'cc'},
   13:{cx:620,ground:170,facing:'left',hold:null,cls:'cr'},
-  14:{cx:400,ground:200,facing:'right',hold:null,cls:'cc'},
+  14:{cx:620,ground:195,facing:'left',hold:null,cls:'cr'},
+  15:{cx:300,ground:195,facing:'right',hold:null,cls:'cl'},
 };
 
 // NPC speaker key lookup
@@ -547,7 +549,7 @@ const NPC_BG = {vogel:'#1e1232',mayo:'#1a1a1a',rachel:'#2d0a1a',karolina:'#0c1f3
 // ============================================================
 // SCENES
 // ============================================================
-const TOTAL_SCENES = 14;
+const TOTAL_SCENES = 15;
 const SCENES = [
   // 0 — OPENING
   {
@@ -574,7 +576,7 @@ const SCENES = [
   {
     id:2, chapter:"Chapter 1: The Question", location:"Chemistry Lab", bg:"lab",
     speaker:"Karolina",
-    dialogue:"Oh you came to the lab! Perfect. The answer is: Epinephrine. That is the other name for adrenaline. And what does adrenaline do? It is the primary neurotransmitter and hormone that drives the body's fight or flight response. It signals your heart to pump faster, forcing more oxygen rich blood to your brain and major muscle groups. Now go into the greenhouse room!",
+    dialogue:"Oh you came to the lab! Perfect. The answer is: Epinephrine. That is the scientific name for adrenaline. Now, what does adrenaline actually do? It is the primary neurotransmitter and hormone that drives the body's fight or flight response. Adrenaline signals your heart to pump faster, forcing more oxygen rich blood to your brain and major muscle groups. Now head into the greenhouse room!",
     answer:{label:"Answer: What is another name for adrenaline?", text:"Epinephrine"},
     chemFact:{icon:"🧠",label:"What Adrenaline Does",text:"<strong>Adrenaline (Epinephrine)</strong> is the primary neurotransmitter and hormone that drives the body's fight or flight response. It signals your heart to pump faster, forcing more oxygen rich blood to your brain and major muscle groups."},
     outcome:{type:"good",text:"✓ Learned: Adrenaline = Epinephrine"},
@@ -585,7 +587,7 @@ const SCENES = [
   {
     id:3, chapter:"Chapter 2: How Do We Fall?", location:"School Greenhouse", bg:"greenhouse",
     speaker:"Mr. Mayo",
-    dialogue:"How does someone fall in love? Great question. The science has three stages. I can tell you the first part, but for the full story you have two options: head to the student center, or go into Mrs. Vogel's office.",
+    dialogue:"How does someone fall in love? Great question. The science has three stages. I can tell you the first part, but for the fully story you have two options: head to the student center, or go into Mrs. Vogel's office.",
     chemFact:{icon:"💡",label:"Three Stages of Love",text:"Falling in love is not magic. It is biology. Scientists have identified <strong>three distinct neurochemical stages</strong>: the biological drive, attraction, and attachment. Each involves different hormones and brain regions."},
     choices:[
       {icon:"🏠",text:"Go to the student center",sub:"Find Rachel there",next:4},
@@ -607,7 +609,7 @@ const SCENES = [
   {
     id:5, chapter:"Chapter 2: How Do We Fall?", location:"Mrs. Vogel's Office", bg:"office",
     speaker:"Mrs. Vogel",
-    dialogue:"You found my office! Pull up my computer. You will see Stage 1: the biological drive. Testosterone and estrogen are part of the initial spark and physical attraction that motivate persons to seek intimacy and a spark to pursue a partner. But before Stage 2, you need to know: what four components make someone really capture your attention? Go find Mrs. Vogel in person.",
+    dialogue:"You found my office! Pull up my computer. Testosterone and estrogen are part of the initial spark and physical attraction that motivate persons to seek intimacy and a spark to pursue a partner. But before Stage 2, you need to know: what four components make someone really capture your attention? Go find Mrs. Vogel in person.",
     answer:{label:"Stage 1: The Biological Drive",text:"Testosterone and estrogen are part of the initial spark and physical attraction that motivate persons to seek intimacy and a spark to pursue a partner."},
     chemFact:{icon:"💻",label:"From the Computer Files",text:"<strong>Testosterone</strong> and <strong>estrogen</strong> kick off the initial spark. These are among the most well-studied hormones in attraction research. They influence both physical features and the neurological drive to seek a partner."},
     outcome:{type:"good",text:"✓ Stage 1 Unlocked: The Biological Drive"},
@@ -657,29 +659,29 @@ const SCENES = [
     outcome:{type:"good",text:"✓ Stage 2 Complete: The Obsessive High"},
     item:"🔁 Reward Center Activated",
     choices:[
-      {icon:"🏫",text:"Go into Classroom 1",sub:"Rachel will explain Stage 3",next:12},
-      {icon:"🏫",text:"Go into Classroom 2",sub:"Karolina will explain Stage 3",next:12}
+      {icon:"🏫",text:"Go into Classroom 1",sub:"Rachel will explain Stage 3",next:14},
+      {icon:"🏫",text:"Go into Classroom 2",sub:"Karolina will explain Stage 3",next:15}
     ]
   },
   // 10 — STAGE 2 PART 2 (office path continued from scene 6)
   {
     id:10, chapter:"Chapter 2: How Do We Fall?", location:"Mrs. Vogel's Office", bg:"office",
     speaker:"Mrs. Vogel",
-    dialogue:"The brain's reward center, the central tegmental area, is flooded with these chemicals that make love feel exciting, addictive, and even obsessive. For Stage 3, you have two options: go to Classroom 1 or Classroom 2.",
+    dialogue:"The brain's reward center, the central tegmental area, is flooded with these chemicals that make love feel exciting, addictive, and obsessive. For Stage 3, you have two options: go to Classroom 1 or Classroom 2.",
     answer:{label:"Stage 2: Attraction (The Obsessive High)",text:"The brain's reward center (central tegmental area) is flooded with dopamine, norepinephrine, and related chemicals, making love feel exciting, addictive, and even obsessive."},
     chemFact:{icon:"🧠",label:"The Reward Center",text:"The <strong>central tegmental area (VTA)</strong> floods the brain with dopamine during attraction. This is the same reward circuitry activated by music, food, and other powerful pleasures, which explains why early love feels so all-consuming."},
     outcome:{type:"good",text:"✓ Stage 2 Complete: The Obsessive High"},
     item:"🔁 Reward Center Activated",
     choices:[
-      {icon:"🏫",text:"Go into Classroom 1",sub:"Rachel will tell you about Stage 3",next:12},
-      {icon:"🏫",text:"Go into Classroom 2",sub:"Karolina will tell you about Stage 3",next:12}
+      {icon:"🏫",text:"Go into Classroom 1",sub:"Rachel will tell you about Stage 3",next:14},
+      {icon:"🏫",text:"Go into Classroom 2",sub:"Karolina will tell you about Stage 3",next:15}
     ]
   },
   // 11 — BATHROOM / MR. MAYO (Stage 3)
   {
     id:11, chapter:"Chapter 3: Attachment", location:"Student Center Bathroom", bg:"bathroom",
     speaker:"Mr. Mayo",
-    dialogue:"Ha, not where you expected a chemistry lesson! Stage 3: Attachment. The long-term bond. The initial rush of infatuation mellows out and the relationship becomes a phase of long term bonding. The brain replaces those obsessive highs with calming and steady chemicals to create lifelong relationships. The two chemicals responsible are oxytocin and vasopressin, which foster deep trust and attachment and promote feelings of protection, commitment, and long term security. Now head out to the front courtyard!",
+    dialogue:"Ha, not where you expected a chemistry lesson! Stage 3: Attachment, The long-term bond. The initial rush of infatuation mellows out and the relationship becomes a phase of long term bonding. The brain replaces those obsessive highs with calming and steady chemicals to create lifelong relationships. The two chemicals responsible are oxytocin and vasopressin, which foster deep trust and attachment and promote feelings of protection, commitment, and long term security. Now head out to the front courtyard!",
     answer:{label:"Stage 3: Attachment, The Long-Term Bond",text:"Oxytocin and vasopressin foster deep trust and attachment and promote feelings of protection, commitment, and long term security."},
     chemFact:{icon:"🤝",label:"Stage 3: Attachment Chemistry",text:"<strong>Oxytocin</strong> (the bonding hormone) and <strong>vasopressin</strong> (linked to loyalty and long-term commitment) replace the dopamine rush of early love. These calming neuropeptides shift the relationship from addictive excitement to stable, secure attachment."},
     outcome:{type:"good",text:"✓ Stage 3 Unlocked: Oxytocin + Vasopressin"},
@@ -708,11 +710,22 @@ const SCENES = [
     item:"🦋 Adrenaline Signs",
     isEnd:true, endType:"complete"
   },
-  // 14 — placeholder for classroom 1/2 stage 3 (same content either path)
+  // 14 — CLASSROOM 1 / RACHEL (Stage 3)
   {
-    id:14, chapter:"Chapter 3: Attachment", location:"Classroom", bg:"classroom2",
+    id:14, chapter:"Chapter 3: Attachment", location:"Classroom 1", bg:"classroom2",
+    speaker:"Rachel",
+    dialogue:"Stage 3 is attachment, which is the long term bond. The initial rush of infatuation mellows out and the relationship becomes a phase of long term bonding. The brain replaces those obsessive highs with calming and steady chemicals to create lifelong relationships. The two chemicals responsible are oxytocin and vasopressin, which foster deep trust and attachment and promote feelings of protection, commitment, and long term security. Now head out to the front courtyard!",
+    answer:{label:"Stage 3: Attachment, The Long-Term Bond",text:"Oxytocin and vasopressin foster deep trust and attachment and promote feelings of protection, commitment, and long term security."},
+    chemFact:{icon:"🤝",label:"Stage 3: Attachment Chemistry",text:"<strong>Oxytocin</strong> and <strong>vasopressin</strong> replace the dopamine rush of early love with calming, stable bonding. Oxytocin is released during hugging, touching, and social bonding, literally building trust at a chemical level."},
+    outcome:{type:"good",text:"✓ Stage 3 Unlocked: Oxytocin + Vasopressin"},
+    item:"🤝 Attachment Bond",
+    choices:[{icon:"🌳",text:"Head out to the front courtyard",sub:"Rachel and Karolina are waiting",next:12}]
+  },
+  // 15 — CLASSROOM 2 / KAROLINA (Stage 3)
+  {
+    id:15, chapter:"Chapter 3: Attachment", location:"Classroom 2", bg:"classroom2",
     speaker:"Karolina",
-    dialogue:"Welcome! Stage 3 is all about attachment: the long-term bond. The initial rush of infatuation mellows out and the relationship becomes a phase of long term bonding. The brain replaces those obsessive highs with calming chemicals. The two key chemicals are oxytocin and vasopressin, which foster deep trust and attachment and promote feelings of protection, commitment, and long term security. Head to the front courtyard!",
+    dialogue:"Stage 3 is attachment, which is the long term bond. The initial rush of infatuation mellows out and the relationship becomes a phase of long term bonding. The brain replaces those obsessive highs with calming and steady chemicals to create lifelong relationships. The two chemicals responsible are oxytocin and vasopressin, which foster deep trust and attachment and promote feelings of protection, commitment, and long term security. Now head out to the front courtyard!",
     answer:{label:"Stage 3: Attachment, The Long-Term Bond",text:"Oxytocin and vasopressin foster deep trust and attachment and promote feelings of protection, commitment, and long term security."},
     chemFact:{icon:"🤝",label:"Stage 3: Attachment Chemistry",text:"<strong>Oxytocin</strong> and <strong>vasopressin</strong> replace the dopamine rush of early love with calming, stable bonding. Oxytocin is released during hugging, touching, and social bonding, literally building trust at a chemical level."},
     outcome:{type:"good",text:"✓ Stage 3 Unlocked: Oxytocin + Vasopressin"},
@@ -813,7 +826,6 @@ function confirmChar() {
 // SCENE RENDER
 // ============================================================
 function renderScene(id) {
-  if(id===14){ const s=SCENES.find(x=>x.id===14); renderSceneData(s); return; }
   const s = SCENES.find(x=>x.id===id) || SCENES[0];
   renderSceneData(s);
 }
