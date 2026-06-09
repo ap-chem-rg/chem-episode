@@ -510,14 +510,13 @@ const SCENE_NPCS = {
   5:  [], // just player on computer
   6:  [{key:'vogel',   cx:620, ground:200, facing:'left',  hold:'clipboard', cls:'cr'}],
   7:  [{key:'rachel',  cx:180, ground:200, facing:'right', hold:null,        cls:'cl'}],
-  8:  [{key:'rachel',  cx:180, ground:200, facing:'right', hold:null,        cls:'cl'}],
+  8:  [{key:'mayo',    cx:180, ground:205, facing:'right', hold:null,        cls:'cl'}],
   9:  [{key:'karolina',cx:620, ground:195, facing:'left',  hold:null,        cls:'cr'}],
   10: [{key:'vogel',   cx:620, ground:195, facing:'left',  hold:null,        cls:'cr'}],
   11: [{key:'rachel',  cx:620, ground:200, facing:'left',  hold:null,        cls:'cr'},{key:'karolina',cx:400,ground:200,facing:'right',hold:null,cls:'cc'}],
   12: [], // player alone in courtyard
   13: [{key:'vogel',   cx:180, ground:170, facing:'right', hold:null,        cls:'cl'}],
-  14: [{key:'rachel',  cx:180, ground:195, facing:'right', hold:null, cls:'cl'}],
-  15: [{key:'karolina',cx:620, ground:195, facing:'left',  hold:null, cls:'cr'}],
+  14: [], // end
 };
 
 // player position per scene
@@ -536,8 +535,7 @@ const PLAYER_POS = {
   11:{cx:180,ground:200,facing:'right',hold:'muffin',cls:'cl'},
   12:{cx:400,ground:195,facing:'right',hold:null,cls:'cc'},
   13:{cx:620,ground:170,facing:'left',hold:null,cls:'cr'},
-  14:{cx:620,ground:195,facing:'left',hold:null,cls:'cr'},
-  15:{cx:300,ground:195,facing:'right',hold:null,cls:'cl'},
+  14:{cx:400,ground:200,facing:'right',hold:null,cls:'cc'},
 };
 
 // NPC speaker key lookup
@@ -549,7 +547,7 @@ const NPC_BG = {vogel:'#1e1232',mayo:'#1a1a1a',rachel:'#2d0a1a',karolina:'#0c1f3
 // ============================================================
 // SCENES
 // ============================================================
-const TOTAL_SCENES = 15;
+const TOTAL_SCENES = 14;
 const SCENES = [
   // 0 — OPENING
   {
@@ -566,7 +564,7 @@ const SCENES = [
   {
     id:1, chapter:"Chapter 1: The Question", location:"Chemistry Classroom", bg:"classroom",
     speaker:"Mrs. Vogel",
-    dialogue:"Great choice staying! The answer is: Epinephrine. That is the scientific name for adrenaline. Now, what does adrenaline actually do? It is the primary neurotransmitter and hormone that drives the body's fight or flight response. Adrenaline signals your heart to pump faster, forcing more oxygen rich blood to your brain and major muscle groups. Now head into the greenhouse room!",
+    dialogue:"Great choice staying! The answer is: Epinephrine. That is the scientific name for adrenaline. Now, what does adrenaline actually do? It is the primary neurotransmitter and hormone that drives the body’s fight or flight response. Adrenaline signals your heart to pump faster, forcing more oxygen rich blood to your brain and major muscle groups. Now head into the greenhouse room!",
     answer:{label:"Answer: What is another name for adrenaline?", text:"Epinephrine"},
     chemFact:{icon:"🧠",label:"What Adrenaline Does",text:"<strong>Adrenaline (Epinephrine)</strong> is the primary neurotransmitter and hormone that drives the body's fight or flight response. It signals your heart to pump faster, forcing more oxygen rich blood to your brain and major muscle groups."},
     outcome:{type:"good",text:"✓ Learned: Adrenaline = Epinephrine"},
@@ -576,7 +574,7 @@ const SCENES = [
   {
     id:2, chapter:"Chapter 1: The Question", location:"Chemistry Lab", bg:"lab",
     speaker:"Karolina",
-    dialogue:"Oh you came to the lab! Perfect. The answer is: Epinephrine. That is the scientific name for adrenaline. Now, what does adrenaline actually do? It is the primary neurotransmitter and hormone that drives the body's fight or flight response. Adrenaline signals your heart to pump faster, forcing more oxygen rich blood to your brain and major muscle groups. Now head into the greenhouse room!",
+    dialogue:"Oh you came to the lab! Perfect. The answer is: Epinephrine. That is the scientific name for adrenaline. Now, what does adrenaline actually do? It is the primary neurotransmitter and hormone that drives the body’s fight or flight response. Adrenaline signals your heart to pump faster, forcing more oxygen rich blood to your brain and major muscle groups. Now head into the greenhouse room!",
     answer:{label:"Answer: What is another name for adrenaline?", text:"Epinephrine"},
     chemFact:{icon:"🧠",label:"What Adrenaline Does",text:"<strong>Adrenaline (Epinephrine)</strong> is the primary neurotransmitter and hormone that drives the body's fight or flight response. It signals your heart to pump faster, forcing more oxygen rich blood to your brain and major muscle groups."},
     outcome:{type:"good",text:"✓ Learned: Adrenaline = Epinephrine"},
@@ -587,7 +585,7 @@ const SCENES = [
   {
     id:3, chapter:"Chapter 2: How Do We Fall?", location:"School Greenhouse", bg:"greenhouse",
     speaker:"Mr. Mayo",
-    dialogue:"How does someone fall in love? Great question. The science has three stages. I can tell you the first part, but for the fully story you have two options: head to the student center, or go into Mrs. Vogel's office.",
+    dialogue:"How does someone fall in love? Great question. The science has three stages. I can tell you the first part, but for the fully story you have two options: head to the student center, or go into Mrs. Vogel’s office.",
     chemFact:{icon:"💡",label:"Three Stages of Love",text:"Falling in love is not magic. It is biology. Scientists have identified <strong>three distinct neurochemical stages</strong>: the biological drive, attraction, and attachment. Each involves different hormones and brain regions."},
     choices:[
       {icon:"🏠",text:"Go to the student center",sub:"Find Rachel there",next:4},
@@ -620,7 +618,7 @@ const SCENES = [
   {
     id:6, chapter:"Chapter 2: How Do We Fall?", location:"Mrs. Vogel's Office", bg:"office",
     speaker:"Mrs. Vogel",
-    dialogue:"You found me! Now, let's talk about attraction, the obsessive high. Before I tell you more, here is what you need to know first. What four components make someone really capture your attention? Dopamine, norepinephrine, decreased serotonin, and deactivation of the prefrontal cortex. Now come with me to learn what happens next.",
+    dialogue:"You found me! Now, let’s talk about attraction, the obsessive high. Before I tell you more, here is what you need to know first. What four components make someone really capture your attention? Dopamine, norepinephrine, decreased serotonin, and deactivation of the prefrontal cortex. Now come with me to learn what happens next.",
     answer:{label:"4 Components of Attraction",text:"Dopamine, norepinephrine, decreased serotonin, and deactivation of the prefrontal cortex."},
     chemFact:{icon:"💘",label:"Stage 2: Attraction Chemistry",text:"<strong>Dopamine</strong> creates craving and reward. <strong>Norepinephrine</strong> causes racing heart and excitement. <strong>Decreased serotonin</strong> leads to obsessive thinking. Deactivation of the <strong>prefrontal cortex</strong> means your rational brain steps back, so love literally makes you less logical!"},
     outcome:{type:"good",text:"✓ Four Components of Attraction Learned"},
@@ -642,7 +640,7 @@ const SCENES = [
   {
     id:8, chapter:"Chapter 2: How Do We Fall?", location:"Cafeteria", bg:"cafeteria",
     speaker:"Rachel",
-    dialogue:"The brain's reward center, the central tegmental area, is flooded with these chemicals that make love feel exciting, addictive, and even obsessive. Now go into the student center bathroom and Mr. Mayo will be there to tell you about Stage 3.",
+    dialogue:"The brain’s reward center, the central tegmental area, is flooded with these chemicals that make love feel exciting, addictive, and even obsessive. Now go into the student center bathroom and Mr. Mayo will be there to tell you about Stage 3.",
     answer:{label:"Stage 2: Attraction (The Obsessive High)",text:"The brain's reward center (central tegmental area) is flooded with dopamine, norepinephrine, and related chemicals that make love feel exciting, addictive, and even obsessive."},
     chemFact:{icon:"🧠",label:"The Reward Center",text:"The <strong>central tegmental area (VTA)</strong> is a dopamine factory. When activated by attraction, it floods the brain with dopamine. This is the same system activated by food, music, and certain drugs, which is why early love can feel genuinely addictive."},
     outcome:{type:"good",text:"✓ Stage 2 Complete: The Obsessive High"},
@@ -653,28 +651,28 @@ const SCENES = [
   {
     id:9, chapter:"Chapter 2: How Do We Fall?", location:"Mrs. Vogel's Office", bg:"office",
     speaker:"Mrs. Vogel",
-    dialogue:"Now the second half of Stage 2. The brain's reward center, the central tegmental area, is flooded with these chemicals that make love feel exciting, addictive, and even obsessive. You have two options for Stage 3: go into Classroom 1 or Classroom 2.",
+    dialogue:"The brain’s reward center, the central tegmental area, is flooded with these chemicals that make love feel exciting, addictive, and obsessive. For Stage 3, you have two options: go to Classroom 1 or Classroom 2.",
     answer:{label:"Stage 2: Attraction (The Obsessive High)",text:"The brain's reward center (central tegmental area) is flooded with dopamine, norepinephrine, and related chemicals that make love feel exciting, addictive, and even obsessive."},
     chemFact:{icon:"🧠",label:"The Reward Center",text:"The <strong>central tegmental area (VTA)</strong> is a dopamine factory. When activated by attraction, it floods the brain with dopamine. This is the same system activated by food, music, and certain drugs, which is why early love can feel genuinely addictive."},
     outcome:{type:"good",text:"✓ Stage 2 Complete: The Obsessive High"},
     item:"🔁 Reward Center Activated",
     choices:[
-      {icon:"🏫",text:"Go into Classroom 1",sub:"Rachel will explain Stage 3",next:14},
-      {icon:"🏫",text:"Go into Classroom 2",sub:"Karolina will explain Stage 3",next:15}
+      {icon:"🏫",text:"Go into Classroom 1",sub:"Rachel will explain Stage 3",next:12},
+      {icon:"🏫",text:"Go into Classroom 2",sub:"Karolina will explain Stage 3",next:12}
     ]
   },
   // 10 — STAGE 2 PART 2 (office path continued from scene 6)
   {
     id:10, chapter:"Chapter 2: How Do We Fall?", location:"Mrs. Vogel's Office", bg:"office",
     speaker:"Mrs. Vogel",
-    dialogue:"The brain's reward center, the central tegmental area, is flooded with these chemicals that make love feel exciting, addictive, and obsessive. For Stage 3, you have two options: go to Classroom 1 or Classroom 2.",
+    dialogue:"The brain's reward center, the central tegmental area, is flooded with these chemicals that make love feel exciting, addictive, and even obsessive. For Stage 3, you have two options: go to Classroom 1 or Classroom 2.",
     answer:{label:"Stage 2: Attraction (The Obsessive High)",text:"The brain's reward center (central tegmental area) is flooded with dopamine, norepinephrine, and related chemicals, making love feel exciting, addictive, and even obsessive."},
     chemFact:{icon:"🧠",label:"The Reward Center",text:"The <strong>central tegmental area (VTA)</strong> floods the brain with dopamine during attraction. This is the same reward circuitry activated by music, food, and other powerful pleasures, which explains why early love feels so all-consuming."},
     outcome:{type:"good",text:"✓ Stage 2 Complete: The Obsessive High"},
     item:"🔁 Reward Center Activated",
     choices:[
-      {icon:"🏫",text:"Go into Classroom 1",sub:"Rachel will tell you about Stage 3",next:14},
-      {icon:"🏫",text:"Go into Classroom 2",sub:"Karolina will tell you about Stage 3",next:15}
+      {icon:"🏫",text:"Go into Classroom 1",sub:"Rachel will tell you about Stage 3",next:12},
+      {icon:"🏫",text:"Go into Classroom 2",sub:"Karolina will tell you about Stage 3",next:12}
     ]
   },
   // 11 — BATHROOM / MR. MAYO (Stage 3)
@@ -703,27 +701,16 @@ const SCENES = [
   {
     id:13, chapter:"Chapter 5: The Final Discovery", location:"The Field", bg:"field",
     speaker:"Mrs. Vogel",
-    dialogue:"You made it! Here is the final discovery. What happens when your adrenaline kicks in? Sweaty palms, racing heart, butterflies in your stomach, and dilated pupils. These are the physical signs that your body's chemistry is telling you something important. That is the science of falling in love!",
+    dialogue:"You made it! Here is the final discovery. What happens when your adrenaline kicks in? Sweaty palms, racing heart, butterflies in your stomach, and dilated pupils. These are the physical signs that your body’s chemistry is telling you something important. That is the science of falling in love!",
     answer:{label:"What happens when your adrenaline kicks in?",text:"Sweaty palms, racing heart, butterflies in your stomach, and dilated pupils."},
     chemFact:{icon:"🦋",label:"The Physical Signs of Love",text:"<strong>Sweaty palms</strong> (eccrine gland activation), <strong>racing heart</strong> (increased cardiac output), <strong>butterflies</strong> (reduced gut blood flow), and <strong>dilated pupils</strong> (sympathetic nervous system response) are all driven by adrenaline. Your body literally cannot hide love."},
     outcome:{type:"good",text:"✓ Hunt Complete! You discovered the chemistry of love!"},
     item:"🦋 Adrenaline Signs",
     isEnd:true, endType:"complete"
   },
-  // 14 — CLASSROOM 1 / RACHEL (Stage 3)
+  // 14 — placeholder for classroom 1/2 stage 3 (same content either path)
   {
-    id:14, chapter:"Chapter 3: Attachment", location:"Classroom 1", bg:"classroom2",
-    speaker:"Rachel",
-    dialogue:"Stage 3 is attachment, which is the long term bond. The initial rush of infatuation mellows out and the relationship becomes a phase of long term bonding. The brain replaces those obsessive highs with calming and steady chemicals to create lifelong relationships. The two chemicals responsible are oxytocin and vasopressin, which foster deep trust and attachment and promote feelings of protection, commitment, and long term security. Now head out to the front courtyard!",
-    answer:{label:"Stage 3: Attachment, The Long-Term Bond",text:"Oxytocin and vasopressin foster deep trust and attachment and promote feelings of protection, commitment, and long term security."},
-    chemFact:{icon:"🤝",label:"Stage 3: Attachment Chemistry",text:"<strong>Oxytocin</strong> and <strong>vasopressin</strong> replace the dopamine rush of early love with calming, stable bonding. Oxytocin is released during hugging, touching, and social bonding, literally building trust at a chemical level."},
-    outcome:{type:"good",text:"✓ Stage 3 Unlocked: Oxytocin + Vasopressin"},
-    item:"🤝 Attachment Bond",
-    choices:[{icon:"🌳",text:"Head out to the front courtyard",sub:"Rachel and Karolina are waiting",next:12}]
-  },
-  // 15 — CLASSROOM 2 / KAROLINA (Stage 3)
-  {
-    id:15, chapter:"Chapter 3: Attachment", location:"Classroom 2", bg:"classroom2",
+    id:14, chapter:"Chapter 3: Attachment", location:"Classroom", bg:"classroom2",
     speaker:"Karolina",
     dialogue:"Stage 3 is attachment, which is the long term bond. The initial rush of infatuation mellows out and the relationship becomes a phase of long term bonding. The brain replaces those obsessive highs with calming and steady chemicals to create lifelong relationships. The two chemicals responsible are oxytocin and vasopressin, which foster deep trust and attachment and promote feelings of protection, commitment, and long term security. Now head out to the front courtyard!",
     answer:{label:"Stage 3: Attachment, The Long-Term Bond",text:"Oxytocin and vasopressin foster deep trust and attachment and promote feelings of protection, commitment, and long term security."},
@@ -826,6 +813,7 @@ function confirmChar() {
 // SCENE RENDER
 // ============================================================
 function renderScene(id) {
+  if(id===14){ const s=SCENES.find(x=>x.id===14); renderSceneData(s); return; }
   const s = SCENES.find(x=>x.id===id) || SCENES[0];
   renderSceneData(s);
 }
