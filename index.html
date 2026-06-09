@@ -727,6 +727,7 @@ SCENE_NPCS[12] = [{key:'rachel',cx:220,ground:195,facing:'right',hold:null,cls:'
 // STATE
 // ============================================================
 let state = { selectedChar:null, sceneId:0, items:[], history:[] };
+let activeTyper = null;
 
 // ============================================================
 // CHARACTER SELECT
@@ -915,10 +916,19 @@ function renderItems() {
   document.getElementById('items-bar').innerHTML = state.items.map(i=>`<div class="item-badge">${i}</div>`).join('');
 }
 function typeText(elId, text) {
-  const el=document.getElementById(elId);
-  el.textContent='';
-  let i=0;
-  (function tick(){ if(i<text.length){ el.textContent+=text[i++]; setTimeout(tick,18); } })();
+  if (activeTyper) clearTimeout(activeTyper);
+  const el = document.getElementById(elId);
+  el.textContent = '';
+  let i = 0;
+  function tick() {
+    if (i < text.length) {
+      el.textContent += text[i++];
+      activeTyper = setTimeout(tick, 18);
+    } else {
+      activeTyper = null;
+    }
+  }
+  tick();
 }
 function resetGame() {
   state = { selectedChar:null, sceneId:0, items:[], history:[] };
